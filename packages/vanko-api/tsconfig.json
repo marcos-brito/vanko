@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "esnext",
+        "moduleResolution": "nodenext",
+        "esModuleInterop": true,
+        "allowImportingTsExtensions": true,
+        "strict": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
