@@ -30,7 +30,7 @@ describe("GET /users/:id", () => {
         const res = await req.get("/users/1");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(user as User);
+        expect(res.body.data).toEqual(user as User);
     });
 
     it("returns 404 if user doesn't exists", async () => {

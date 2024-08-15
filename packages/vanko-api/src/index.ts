@@ -16,6 +16,11 @@ app.use(
 app.use(async (ctx, next) => {
     try {
         await next();
+
+        ctx.body = {
+            status: "sucess",
+            data: ctx.body
+        };
     } catch (err: any) {
         ctx.status = err.status || 500;
 
@@ -24,6 +29,7 @@ app.use(async (ctx, next) => {
         }
 
         ctx.body = {
+            status: "error",
             error: {
                 scope: err.scope || "internal_error",
                 message: err.message
