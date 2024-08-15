@@ -11,6 +11,7 @@ export async function id(ctx: ApiContext<{}, User>) {
     }
 
     ctx.status = 200;
+    ctx.message = "User found";
     ctx.body = presentUser(user);
 }
 }

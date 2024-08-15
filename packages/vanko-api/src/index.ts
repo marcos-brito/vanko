@@ -19,7 +19,8 @@ app.use(async (ctx, next) => {
 
         ctx.body = {
             status: "sucess",
-            data: ctx.body
+            data: ctx.body,
+            message: ctx.message
         };
     } catch (err: any) {
         ctx.status = err.status || 500;
