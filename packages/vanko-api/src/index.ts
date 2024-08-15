@@ -1,10 +1,10 @@
 import "dotenv/config";
 import Koa from "koa";
-import router from "@/routes/router.ts";
+import router from "@/router.ts";
 import logger from "@/logger.ts";
 
 const port = process.env.PORT;
-const app = new Koa();
+export const app = new Koa();
 
 app.on("error", (err) => {
     logger.error(err);
