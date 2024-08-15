@@ -2,7 +2,7 @@ import supertest from "supertest";
 import { app } from "../../src/index.ts";
 import db from "@/db.ts";
 import { Gender, Role, Status } from "@/models/types/user.ts";
-import { User } from "@/presenters.ts";
+import { presentUser } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
 
 const req = supertest(app.callback());
@@ -30,7 +30,7 @@ describe("GET /users/:id", () => {
         const res = await req.get("/users/1");
 
         expect(res.status).toBe(200);
-        expect(res.body.data).toEqual(user as User);
+        expect(res.body.data).toEqual(presentUser(user));
     });
 
     it("returns 404 if user doesn't exists", async () => {
