@@ -35,4 +35,4 @@ export interface UserTable {
     status: Defaulted<Status>;
 }
 
-export type User = Selectable<UserTable>;
+export type SelectUser = Selectable<UserTable>;

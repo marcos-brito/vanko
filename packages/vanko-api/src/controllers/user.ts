@@ -1,5 +1,5 @@
 import { ApiContext } from "@/types.ts";
-import { User } from "@/presenters.ts";
+import { User, presentUser } from "@/presenters.ts";
 import * as userRepository from "@/models/user.ts";
 import { notFoundError } from "@/errors.ts";
 
@@ -11,5 +11,6 @@ export async function id(ctx: ApiContext<{}, User>) {
     }
 
     ctx.status = 200;
-    ctx.body = user as User;
+    ctx.body = presentUser(user);
+}
 }
