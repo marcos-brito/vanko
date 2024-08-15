@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "email": "john.doe@example.com",
+        "hashed_password": "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
+        "role": "user",
+        "name": "John Doe",
+        "gender": "male",
+        "cpf": "12345678900",
+        "phone": "11987654321",
+        "ranking": 3,
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "email": "jane.smith@example.com",
+        "hashed_password": "$2b$10$y3n/MEqHKYX7OVZx4uG/yO6JzA6SIXJztkg3SktMdZ8woWl9JZrOG",
+        "role": "admin",
+        "name": "Jane Smith",
+        "gender": "female",
+        "cpf": "98765432100",
+        "phone": "21912345678",
+        "ranking": 2,
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "email": "michael.jones@example.com",
+        "hashed_password": "$2b$10$C7/1Ogz5p/8PslRnM0eKQOho/oNHn4KNm4peFf5PSWb9D4b56wJ7K",
+        "role": "user",
+        "name": "Michael Jones",
+        "gender": "male",
+        "cpf": "45678912300",
+        "phone": "31998765432",
+        "ranking": 2,
+        "status": "inactive"
+    }
+]
