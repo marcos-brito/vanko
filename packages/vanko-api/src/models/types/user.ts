@@ -1,4 +1,10 @@
-import { Generated, Selectable } from "kysely";
+import { Generated, Selectable, ColumnType } from "kysely";
+
+/**
+ * A shortcut to defining columns with default values. The type is
+ * the same for selects, inserted and updates, but can be omitted for insertions.
+ */
+type Defaulted<T> = ColumnType<T, T | undefined, T>;
 
 export enum Role {
     User = "user",
@@ -20,13 +26,13 @@ export interface UserTable {
     id: Generated<number>;
     email: string;
     hashed_password: string;
-    role: Role;
+    role: Defaulted<Role>;
     name: string;
-    gender: Gender;
+    gender: Defaulted<Gender>;
     cpf: string;
     phone: string;
-    ranking: number;
-    status: Status;
+    ranking: Defaulted<number>;
+    status: Defaulted<Status>;
 }
 
 export type User = Selectable<UserTable>;
