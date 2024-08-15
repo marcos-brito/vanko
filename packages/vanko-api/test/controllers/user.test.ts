@@ -26,6 +26,10 @@ describe("GET /users/:id", () => {
         await db.insertInto("user").values(user).execute();
     });
 
+    afterAll(async () => {
+        await db.deleteFrom("user").execute();
+    });
+
     it("gets a user", async () => {
         const res = await req.get("/users/1");
 
@@ -42,6 +46,37 @@ describe("GET /users/:id", () => {
 
     it("returns 400 when id is NaN", async () => {
         const res = await req.get("/users/b{2%");
+
+        expect(res.status).toBe(400);
+        expect(res.body.error.scope).toMatch(Scope.ValidationError);
+    });
+});
+
+describe("POST /users/", () => {
+    const user = {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        cpf: "12345678900",
+        password: "supersecretpassword",
+        gender: Gender.Male,
+        phone: "11987654321"
+    };
+
+    it("should create a user", async () => {
+        const res = await req
+            .post("/users")
+            .set("Accept", "application/json")
+            .send(user);
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(201);
+        expect(res.headers["location"]).toMatch(new RegExp(".users/[0-9]+"));
+        expect(res.body.data.email).toEqual(user.email);
+    });
+
+    it("returns 400 for bad payload", async () => {
+        const res = await req.post("/users").send({ name: "Jane Doe" });
 
         expect(res.status).toBe(400);
         expect(res.body.error.scope).toMatch(Scope.ValidationError);

@@ -1,4 +1,4 @@
-import { Generated, Selectable, ColumnType } from "kysely";
+import { Generated, Selectable, Insertable, ColumnType } from "kysely";
 
 /**
  * A shortcut to defining columns with default values. The type is
@@ -36,3 +36,4 @@ export interface UserTable {
 }
 
 export type SelectUser = Selectable<UserTable>;
+export type InsertUser = Insertable<UserTable>;
