@@ -36,4 +36,11 @@ usersRouter.patch(
     userController.patch
 );
 
+usersRouter.del(
+    "/:id",
+    koaBody(),
+    validateParam(IdParameterSchema),
+    userController.del
+);
+
 export default usersRouter;

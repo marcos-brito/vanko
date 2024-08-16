@@ -71,3 +71,14 @@ export async function patch(ctx: ApiContext<UserPatchReq, IdParameter>) {
         throw InternalError();
     }
 }
+
+export async function del(ctx: ApiContext<{}, IdParameter, User>) {
+    let deleted = await userRepository.del(ctx.state.param.id);
+
+    if (!deleted) {
+        throw notFoundError("User not found");
+    }
+
+    ctx.status = 200;
+    ctx.message = "User Deleted";
+}

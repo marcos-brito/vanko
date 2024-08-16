@@ -28,6 +28,14 @@ export async function update(id: number, user: UpdateUser) {
         .execute();
 }
 
+export async function del(id: number) {
+    return await db
+        .deleteFrom("user")
+        .where("id", "=", id)
+        .returningAll()
+        .executeTakeFirst();
+}
+
 export async function canUpdate(id: number, req: UpdateUser): Promise<boolean> {
     let query = db.selectFrom("user").where("id", "!=", id);
 

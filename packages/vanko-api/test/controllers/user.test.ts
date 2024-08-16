@@ -167,3 +167,36 @@ describe("PATCH /users/:id", () => {
         });
     });
 });
+
+describe("DELETE /users/:id", () => {
+    const user = {
+        id: 1,
+        email: "john.doe@example.com",
+        password:
+            "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
+        role: Role.User,
+        name: "John Doe",
+        gender: Gender.Male,
+        cpf: "12345678900",
+        phone: "11987654321",
+        ranking: 3,
+        status: Status.Active
+    };
+
+    beforeAll(async () => {
+        await db.insertInto("user").values(user).execute();
+    });
+
+    it("deletes a user", async () => {
+        const res = await req.del("/users/1");
+
+        expect(res.status).toBe(200);
+    });
+
+    it("returns 404 if user doesn't exists", async () => {
+        const res = await req.get("/users/22");
+
+        expect(res.status).toBe(404);
+        expect(res.body.error.scope).toMatch(Scope.NotFoundError);
+    });
+});
