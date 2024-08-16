@@ -1,8 +1,11 @@
 import Router from "@koa/router";
-import { UserCreateReq, UserCreateSchema } from "@/schemas/user.ts";
 import { koaBody } from "koa-body";
 import * as userController from "@/controllers/user.ts";
 import { validateBody, validateParam } from "@/middlewares/validate.ts";
+import {
+    IdParameterSchema,
+    UserCreateSchema,
+} from "@/schemas/user.ts";
 
 const usersRouter = new Router();
 
@@ -15,7 +18,7 @@ usersRouter.post(
 
 usersRouter.get(
     "/:id",
-    validateParams(z.object({ id: z.coerce.number() })),
+    validateParam(IdParameterSchema),
     userController.id
 );
 

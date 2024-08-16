@@ -1,11 +1,11 @@
 import { ApiContext } from "@/types.ts";
 import { User, presentUser } from "@/presenters.ts";
 import * as userRepository from "@/models/user.ts";
-import { InternalError, notFoundError } from "@/errors.ts";
-import { UserCreateReq } from "@/schemas/user.ts";
+import {InternalError, notFoundError } from "@/errors.ts";
+import { IdParameter, UserCreateReq } from "@/schemas/user.ts";
 import argon2 from "argon2";
 
-export async function id(ctx: ApiContext<{}, {id:number}, User>) {
+export async function id(ctx: ApiContext<{}, IdParameter, User>) {
     let user = await userRepository.findById(ctx.state.param.id);
 
     if (!user) {
