@@ -25,7 +25,7 @@ export enum Gender {
 export interface UserTable {
     id: Generated<number>;
     email: string;
-    hashed_password: string;
+    password: string;
     role: Defaulted<Role>;
     name: string;
     gender: Defaulted<Gender>;

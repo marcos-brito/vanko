@@ -2,7 +2,7 @@
     {
         "id": 1,
         "email": "john.doe@example.com",
-        "hashed_password": "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
+        "password": "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
         "role": "user",
         "name": "John Doe",
         "gender": "male",
@@ -14,7 +14,7 @@
     {
         "id": 2,
         "email": "jane.smith@example.com",
-        "hashed_password": "$2b$10$y3n/MEqHKYX7OVZx4uG/yO6JzA6SIXJztkg3SktMdZ8woWl9JZrOG",
+        "password": "$2b$10$y3n/MEqHKYX7OVZx4uG/yO6JzA6SIXJztkg3SktMdZ8woWl9JZrOG",
         "role": "admin",
         "name": "Jane Smith",
         "gender": "female",
@@ -26,7 +26,7 @@
     {
         "id": 3,
         "email": "michael.jones@example.com",
-        "hashed_password": "$2b$10$C7/1Ogz5p/8PslRnM0eKQOho/oNHn4KNm4peFf5PSWb9D4b56wJ7K",
+        "password": "$2b$10$C7/1Ogz5p/8PslRnM0eKQOho/oNHn4KNm4peFf5PSWb9D4b56wJ7K",
         "role": "user",
         "name": "Michael Jones",
         "gender": "male",

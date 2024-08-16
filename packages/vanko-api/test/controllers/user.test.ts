@@ -11,7 +11,7 @@ describe("GET /users/:id", () => {
     const user = {
         id: 1,
         email: "john.doe@example.com",
-        hashed_password:
+        password:
             "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
         role: Role.User,
         name: "John Doe",
@@ -67,8 +67,6 @@ describe("POST /users/", () => {
             .post("/users")
             .set("Accept", "application/json")
             .send(user);
-
-        console.log(res.headers);
 
         expect(res.status).toBe(201);
         expect(res.headers["location"]).toMatch(new RegExp(".users/[0-9]+"));

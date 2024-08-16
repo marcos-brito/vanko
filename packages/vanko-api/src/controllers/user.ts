@@ -34,6 +34,9 @@ export async function create(ctx: ApiContext<UserCreateReq, User>) {
             ...rest,
             hashed_password: hash
         });
+        const user = ctx.state;
+        user.password = await argon2.hash(user.password);
+        const created = await userRepository.create(user);
 
         // We let the catch handle it
         if (!created) {
@@ -44,8 +47,7 @@ export async function create(ctx: ApiContext<UserCreateReq, User>) {
         ctx.message = "User created";
         ctx.set("Location", `${ctx.path}/users/${created?.id}`);
         ctx.body = presentUser(created);
-    } catch (e) {
-        console.log(e);
+    } catch {
         throw InternalError();
     }
 }
