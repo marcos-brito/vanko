@@ -1,12 +1,21 @@
-import { RouterContext } from "@koa/router";
-import { DefaultContext } from "koa";
+import { RouterParamContext } from "@koa/router";
+import { ParameterizedContext, DefaultContext, DefaultState } from "koa";
 
 /**
  * Wrapper around koa's context. It allows explict type
- * for state e.g data passed through middlewares, and body i.e response
+ * for request data, response body and url parameters
  */
-export type ApiContext<State = {}, Body = {}> = RouterContext<
-    State,
-    DefaultContext,
+export type ApiContext<
+    Req = DefaultState,
+    Param = unknown,
+    Body = unknown
+> = ParameterizedContext<
+    ApiState<Req, Param>,
+    DefaultContext & RouterParamContext<Req>,
     Body
 >;
+
+export type ApiState<Req, Param> = {
+    req: Req;
+    param: Param;
+};

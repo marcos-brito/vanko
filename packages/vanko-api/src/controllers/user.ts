@@ -5,8 +5,8 @@ import { InternalError, notFoundError } from "@/errors.ts";
 import { UserCreateReq } from "@/schemas/user.ts";
 import argon2 from "argon2";
 
-export async function id(ctx: ApiContext<{}, User>) {
-    let user = await userRepository.findById(Number(ctx.params.id));
+export async function id(ctx: ApiContext<{}, {id:number}, User>) {
+    let user = await userRepository.findById(ctx.state.param.id);
 
     if (!user) {
         throw notFoundError("User not found");
@@ -28,13 +28,7 @@ export async function create(ctx: ApiContext<UserCreateReq, User>) {
     }
 
     try {
-        const { password, ...rest } = ctx.state;
-        const hash = await argon2.hash(password);
-        const created = await userRepository.create({
-            ...rest,
-            hashed_password: hash
-        });
-        const user = ctx.state;
+        const user = ctx.state.req;
         user.password = await argon2.hash(user.password);
         const created = await userRepository.create(user);
 

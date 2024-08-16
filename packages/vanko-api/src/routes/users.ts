@@ -1,16 +1,15 @@
 import Router from "@koa/router";
-import * as userController from "@/controllers/user.ts";
-import { validateBody, validateParams } from "@/middlewares/validate.ts";
-import { z } from "zod";
 import { UserCreateReq, UserCreateSchema } from "@/schemas/user.ts";
 import { koaBody } from "koa-body";
+import * as userController from "@/controllers/user.ts";
+import { validateBody, validateParam } from "@/middlewares/validate.ts";
 
 const usersRouter = new Router();
 
 usersRouter.post(
     "/",
     koaBody(),
-    validateBody<UserCreateReq>(UserCreateSchema),
+    validateBody(UserCreateSchema),
     userController.create
 );
 
