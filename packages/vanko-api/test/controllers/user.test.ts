@@ -7,6 +7,10 @@ import { Scope } from "@/errors.ts";
 
 const req = supertest(app.callback());
 
+afterEach(async () => {
+    await db.deleteFrom("user").execute();
+});
+
 describe("GET /users/:id", () => {
     const user = {
         id: 1,
@@ -24,10 +28,6 @@ describe("GET /users/:id", () => {
 
     beforeAll(async () => {
         await db.insertInto("user").values(user).execute();
-    });
-
-    afterAll(async () => {
-        await db.deleteFrom("user").execute();
     });
 
     it("gets a user", async () => {
