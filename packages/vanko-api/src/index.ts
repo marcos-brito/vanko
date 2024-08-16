@@ -23,6 +23,7 @@ app.use(async (ctx, next) => {
             message: ctx.message
         };
     } catch (err: any) {
+        logger.error(err.message);
         ctx.status = err.status || 500;
 
         if (!err.expose || !err.message) {
