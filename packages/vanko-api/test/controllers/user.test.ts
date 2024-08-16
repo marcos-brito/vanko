@@ -80,3 +80,90 @@ describe("POST /users/", () => {
         expect(res.body.error.scope).toMatch(Scope.ValidationError);
     });
 });
+
+describe("PATCH /users/:id", () => {
+    const joe = {
+        id: 1,
+        email: "john.doe@example.com",
+        password:
+            "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
+        role: Role.User,
+        name: "John Doe",
+        gender: Gender.Male,
+        cpf: "12345678900",
+        phone: "11987654321",
+        ranking: 3,
+        status: Status.Active
+    };
+
+    beforeAll(async () => {
+        await db.insertInto("user").values(joe).execute();
+    });
+
+    it("should update a user", async () => {
+        const update = { name: "Jane doe", gender: Gender.Female };
+        const res = await req.patch("/users/1").send(update);
+
+        expect(res.status).toBe(204);
+    });
+
+    describe("should return 409 if value is not unique", () => {
+        const jane = {
+            id: 2,
+            email: "jane.doe@example.com",
+            password:
+                "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
+            role: Role.User,
+            name: "Jane Doe",
+            gender: Gender.Female,
+            cpf: "12345678911",
+            phone: "11987654321",
+            ranking: 3,
+            status: Status.Active
+        };
+
+        beforeEach(async () => {
+            await db.insertInto("user").values(joe).execute();
+            await db.insertInto("user").values(jane).execute();
+        });
+
+        it("returns 409 for not unique email", async () => {
+            const update = {
+                email: "john.doe@example.com"
+            };
+
+            const res = await req
+                .patch("/users/2")
+                .set("Accept", "application/json")
+                .send(update);
+
+            expect(res.status).toBe(409);
+        });
+
+        it("returns 409 for not unique cpf", async () => {
+            const update = {
+                cpf: "12345678900"
+            };
+
+            const res = await req
+                .patch("/users/2")
+                .set("Accept", "application/json")
+                .send(update);
+
+            expect(res.status).toBe(409);
+        });
+
+        it("returns 409 for not unique id", async () => {
+            const update = {
+                id: 1
+            };
+
+            const res = await req
+                .patch("/users/2")
+                .set("Accept", "application/json")
+                .send(update);
+
+            expect(res.status).toBe(409);
+        });
+    });
+});
