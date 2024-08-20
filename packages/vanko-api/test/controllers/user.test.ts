@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { app } from "../../src/index.ts";
+import { app } from "@/app.ts";
 import db from "@/db.ts";
 import { Gender, Role, Status } from "@/models/types/user.ts";
 import { presentUser } from "@/presenters.ts";
