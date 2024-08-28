@@ -14,6 +14,7 @@ export const UserCreateSchema = z.object({
     password: z.string().min(8),
     gender: z.nativeEnum(Gender).default(Gender.Unspecified),
     phone: z.string().length(11)
+    birth: z.coerce.date()
 });
 
 export type UserCreateReq = z.infer<typeof UserCreateSchema>;
@@ -28,7 +29,8 @@ export const UserUpdateSchema = z.object({
     gender: z.nativeEnum(Gender).default(Gender.Unspecified),
     phone: z.string().length(11),
     ranking: z.number(),
-    status: z.nativeEnum(Status)
+    status: z.nativeEnum(Status),
+    birth: z.coerce.date()
 });
 
 export type UserUpdateReq = z.infer<typeof UserUpdateSchema>;

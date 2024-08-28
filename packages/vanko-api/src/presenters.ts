@@ -10,6 +10,7 @@ export type User = {
     phone: string;
     ranking: number;
     status: Status;
+    birth: string;
 };
 
 export function presentUser(user: SelectUser): User {
@@ -22,6 +23,7 @@ export function presentUser(user: SelectUser): User {
         cpf: user.cpf,
         phone: user.phone,
         ranking: user.ranking,
-        status: user.status
+        status: user.status,
+        birth: user.birth.toISOString()
     };
 }

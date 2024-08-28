@@ -39,6 +39,7 @@ export interface UserTable {
     phone: string;
     ranking: Defaulted<number>;
     status: Defaulted<Status>;
+    birth: Date;
 }
 
 export type SelectUser = Selectable<UserTable>;

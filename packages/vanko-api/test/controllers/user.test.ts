@@ -23,10 +23,12 @@ describe("GET /users/:id", () => {
         cpf: "12345678900",
         phone: "11987654321",
         ranking: 3,
-        status: Status.Active
+        status: Status.Active,
+        birth: new Date()
     };
 
     beforeAll(async () => {
+        user.birth.setHours(0, 0, 0, 0);
         await db.insertInto("user").values(user).execute();
     });
 
@@ -57,9 +59,10 @@ describe("POST /users/", () => {
         name: "John Doe",
         email: "john.doe@example.com",
         cpf: "12345678900",
-        password: "supersecretpassword",
+        password: "Pass#123",
         gender: Gender.Male,
-        phone: "11987654321"
+        phone: "11987654321",
+        birth: new Date()
     };
 
     it("should create a user", async () => {
@@ -93,7 +96,8 @@ describe("PATCH /users/:id", () => {
         cpf: "12345678900",
         phone: "11987654321",
         ranking: 3,
-        status: Status.Active
+        status: Status.Active,
+        birth: new Date()
     };
 
     beforeAll(async () => {
@@ -119,7 +123,8 @@ describe("PATCH /users/:id", () => {
             cpf: "12345678911",
             phone: "11987654321",
             ranking: 3,
-            status: Status.Active
+            status: Status.Active,
+            birth: new Date()
         };
 
         beforeEach(async () => {
@@ -180,7 +185,8 @@ describe("DELETE /users/:id", () => {
         cpf: "12345678900",
         phone: "11987654321",
         ranking: 3,
-        status: Status.Active
+        status: Status.Active,
+        birth: new Date()
     };
 
     beforeAll(async () => {

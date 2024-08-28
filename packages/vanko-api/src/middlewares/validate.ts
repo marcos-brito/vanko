@@ -5,7 +5,7 @@ import { Next } from "koa";
 import { ZodSchema, ZodError } from "zod";
 
 export function validateParam(schema: ZodSchema): Middleware {
-    return async function (ctx: ApiContext, next: Next) {
+    return async function(ctx: ApiContext, next: Next) {
         try {
             ctx.state.param = schema.parse(ctx.params);
             return next();
@@ -20,7 +20,7 @@ export function validateParam(schema: ZodSchema): Middleware {
 }
 
 export function validateBody(schema: ZodSchema): Middleware {
-    return async function (ctx: ApiContext, next: Next) {
+    return async function(ctx: ApiContext, next: Next) {
         try {
             ctx.state.req = schema.parse(ctx.request.body);
             return next();
