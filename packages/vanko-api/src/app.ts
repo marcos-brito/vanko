@@ -3,6 +3,7 @@ import Koa from "koa";
 import router from "@/router.ts";
 import koalogger from "koa-logger";
 import logger from "@/logger.ts";
+import { pingDatabase } from "./db.ts";
 
 const port = process.env.PORT;
 export const app = new Koa();
@@ -44,3 +45,4 @@ app.use(router.routes());
 app.listen(port);
 
 logger.info(`Server listening at ${port}`);
+pingDatabase();

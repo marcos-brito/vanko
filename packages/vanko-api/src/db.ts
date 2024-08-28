@@ -1,6 +1,7 @@
 import pg from "pg";
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, sql } from "kysely";
 import { UserTable } from "@/models/types/user.ts";
+import logger from "./logger.ts";
 
 interface Database {
     user: UserTable;
@@ -20,5 +21,16 @@ const dialect = new PostgresDialect({
 const db = new Kysely<Database>({
     dialect
 });
+
+export function pingDatabase() {
+    try {
+        sql`SELECT 1`.execute(db);
+        logger.info(
+            `Connected to database at ${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}`
+        );
+    } catch (e) {
+        logger.error("Connection to database failed", e);
+    }
+}
 
 export default db;
