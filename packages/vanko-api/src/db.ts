@@ -4,7 +4,7 @@ import { UserTable } from "@/models/types/user.ts";
 import logger from "./logger.ts";
 
 interface Database {
-    user: UserTable;
+    users: UserTable;
 }
 
 const dialect = new PostgresDialect({

@@ -8,7 +8,8 @@ import { Scope } from "@/errors.ts";
 const req = supertest(app.callback());
 
 afterEach(async () => {
-    await db.deleteFrom("user").execute();
+    await db.deleteFrom("users").execute();
+});
 });
 
 describe("GET /users/:id", () => {
@@ -29,7 +30,7 @@ describe("GET /users/:id", () => {
 
     beforeAll(async () => {
         user.birth.setHours(0, 0, 0, 0);
-        await db.insertInto("user").values(user).execute();
+        await db.insertInto("users").values(user).execute();
     });
 
     it("gets a user", async () => {
@@ -101,7 +102,7 @@ describe("PATCH /users/:id", () => {
     };
 
     beforeAll(async () => {
-        await db.insertInto("user").values(joe).execute();
+        await db.insertInto("users").values(joe).execute();
     });
 
     it("should update a user", async () => {
@@ -128,8 +129,8 @@ describe("PATCH /users/:id", () => {
         };
 
         beforeEach(async () => {
-            await db.insertInto("user").values(joe).execute();
-            await db.insertInto("user").values(jane).execute();
+            await db.insertInto("users").values(joe).execute();
+            await db.insertInto("users").values(jane).execute();
         });
 
         it("returns 409 for not unique email", async () => {
@@ -190,7 +191,7 @@ describe("DELETE /users/:id", () => {
     };
 
     beforeAll(async () => {
-        await db.insertInto("user").values(user).execute();
+        await db.insertInto("users").values(user).execute();
     });
 
     it("deletes a user", async () => {

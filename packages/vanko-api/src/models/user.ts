@@ -4,7 +4,7 @@ import { Expression, SqlBool } from "kysely";
 
 export async function findById(id: number): Promise<SelectUser | undefined> {
     return await db
-        .selectFrom("user")
+        .selectFrom("users")
         .where("id", "=", id)
         .selectAll()
         .executeTakeFirst();
@@ -14,7 +14,7 @@ export async function create(
     user: InsertUser
 ): Promise<SelectUser | undefined> {
     return await db
-        .insertInto("user")
+        .insertInto("users")
         .values(user)
         .returningAll()
         .executeTakeFirst();
@@ -22,7 +22,7 @@ export async function create(
 
 export async function update(id: number, user: UpdateUser) {
     return await db
-        .updateTable("user")
+        .updateTable("users")
         .set(user)
         .where("id", "=", id)
         .execute();
@@ -30,14 +30,14 @@ export async function update(id: number, user: UpdateUser) {
 
 export async function del(id: number) {
     return await db
-        .deleteFrom("user")
+        .deleteFrom("users")
         .where("id", "=", id)
         .returningAll()
         .executeTakeFirst();
 }
 
 export async function canUpdate(id: number, req: UpdateUser): Promise<boolean> {
-    let query = db.selectFrom("user").where("id", "!=", id);
+    let query = db.selectFrom("users").where("id", "!=", id);
 
     if (req.email || req.cpf) {
         query = query.where((eb) => {
@@ -61,7 +61,7 @@ export async function canUpdate(id: number, req: UpdateUser): Promise<boolean> {
 export async function canCreate(req: InsertUser): Promise<boolean> {
     return (
         (await db
-            .selectFrom("user")
+            .selectFrom("users")
             .where((eb) => eb("email", "=", req.email).or("cpf", "=", req.cpf))
             .executeTakeFirst()) === undefined
     );
