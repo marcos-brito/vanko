@@ -1,8 +1,10 @@
 import type { Kysely } from "kysely";
-import users from "./data/users.json";
+import { generateMultipleUsers } from "@/utils.ts";
 
 export async function seed(db: Kysely<any>): Promise<void> {
-    for (let user of users) {
-        db.insertInto("user").values(user).execute();
+    const users = generateMultipleUsers(1);
+
+    for (const user of users) {
+        await db.insertInto("users").values(user).execute();
     }
 }
