@@ -8,8 +8,12 @@ import {
     UserPatchSchema,
     UserUpdateSchema
 } from "@/schemas/user.ts";
+import { pagination } from "@/middlewares/pagination.ts";
+import { countPages } from "@/models/user.ts";
 
 const usersRouter = new Router();
+
+usersRouter.get("/", pagination(countPages), userController.all);
 
 usersRouter.post(
     "/",

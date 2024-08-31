@@ -2,14 +2,60 @@ import supertest from "supertest";
 import { app } from "@/app.ts";
 import db from "@/db.ts";
 import { Gender, Role, Status } from "@/models/types/user.ts";
-import { presentUser } from "@/presenters.ts";
+import { presentUser, User } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
+import { generateMultipleUsers } from "@/utils.ts";
+import { DEFAULT_PAGE_SIZE } from "@/schemas/index.ts";
 
 const req = supertest(app.callback());
 
 afterEach(async () => {
     await db.deleteFrom("users").execute();
 });
+
+describe("GET /users", () => {
+    const users = generateMultipleUsers(100);
+
+    beforeEach(async () => {
+        for (const user of users) {
+            await db.insertInto("users").values(user).execute();
+        }
+    });
+
+    it("should return the specified page", async () => {
+        const res = await req.get("/users?page=2&pageSize=5");
+        const users: Array<User> = res.body.data;
+
+        expect(res.status).toBe(200);
+        expect(users.length).toBe(5);
+        expect(res.headers).toMatchObject({
+            "x-pagination-page": "2",
+            "x-pagination-page-size": "5",
+            "x-pagination-page-count": "20"
+        });
+    });
+
+    it("should return at least one user in the last page", async () => {
+        let res = await req.get("/users?page=2&pageSize=5");
+        const lastPage = res.headers["x-pagination-page-count"];
+        res = await req.get(`/users?page=${lastPage}&pageSize=5`);
+
+        expect(res.status).toBe(200);
+        expect(users.length).toBeGreaterThan(0);
+    });
+
+    it("should return default page when is not specified", async () => {
+        const res = await req.get("/users");
+        const users: Array<User> = res.body.data;
+
+        expect(res.status).toBe(200);
+        expect(users.length).toBe(DEFAULT_PAGE_SIZE);
+        expect(res.headers).toMatchObject({
+            "x-pagination-page": "1",
+            "x-pagination-page-size": "20",
+            "x-pagination-page-count": "5"
+        });
+    });
 });
 
 describe("GET /users/:id", () => {

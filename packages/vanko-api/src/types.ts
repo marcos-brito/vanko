@@ -1,5 +1,6 @@
 import { RouterParamContext } from "@koa/router";
 import { ParameterizedContext, DefaultContext, DefaultState } from "koa";
+import { Pagination } from "./schemas/index.ts";
 
 /**
  * Wrapper around koa's context. It allows explict type
@@ -18,4 +19,5 @@ export type ApiContext<
 export type ApiState<Req, Param> = {
     req: Req;
     param: Param;
+    pagination: Pagination;
 };

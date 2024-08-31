@@ -10,6 +10,17 @@ import {
 } from "@/schemas/user.ts";
 import argon2 from "argon2";
 
+export async function all(ctx: ApiContext<{}, {}, Array<User>>) {
+    let users = await userRepository.findPage(ctx.state.pagination);
+
+    if (users.length == 0) {
+        ctx.message = "No registered users";
+    }
+
+    ctx.status = 200;
+    ctx.body = users.map((user) => presentUser(user));
+}
+
 export async function id(ctx: ApiContext<{}, IdParameter, User>) {
     let user = await userRepository.findById(ctx.state.param.id);
 
