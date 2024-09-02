@@ -1,10 +1,10 @@
 import supertest from "supertest";
 import { app } from "@/app.ts";
 import db from "@/db.ts";
-import { Gender, Role, Status } from "@/models/types/user.ts";
+import { Gender, SelectUser } from "@/models/types/user.ts";
 import { presentUser, User } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
-import { generateMultipleUsers } from "@/utils.ts";
+import { generateMultipleUsers, generateUser } from "@/utils.ts";
 import { DEFAULT_PAGE_SIZE } from "@/schemas/index.ts";
 
 const req = supertest(app.callback());
@@ -59,20 +59,7 @@ describe("GET /users", () => {
 });
 
 describe("GET /users/:id", () => {
-    const user = {
-        id: 1,
-        email: "john.doe@example.com",
-        password:
-            "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
-        role: Role.User,
-        name: "John Doe",
-        gender: Gender.Male,
-        cpf: "12345678900",
-        phone: "11987654321",
-        ranking: 3,
-        status: Status.Active,
-        birth: new Date()
-    };
+    const user = generateUser();
 
     beforeAll(async () => {
         user.birth.setHours(0, 0, 0, 0);
@@ -80,14 +67,14 @@ describe("GET /users/:id", () => {
     });
 
     it("gets a user", async () => {
-        const res = await req.get("/users/1");
+        const res = await req.get(`/users/${user.id}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.data).toEqual(presentUser(user));
+        expect(res.body.data).toEqual(presentUser(user as SelectUser));
     });
 
     it("returns 404 if user doesn't exists", async () => {
-        const res = await req.get("/users/22");
+        const res = await req.get("/users/0");
 
         expect(res.status).toBe(404);
         expect(res.body.error.scope).toMatch(Scope.NotFoundError);
@@ -132,60 +119,34 @@ describe("POST /users/", () => {
 });
 
 describe("PATCH /users/:id", () => {
-    const joe = {
-        id: 1,
-        email: "john.doe@example.com",
-        password:
-            "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
-        role: Role.User,
-        name: "John Doe",
-        gender: Gender.Male,
-        cpf: "12345678900",
-        phone: "11987654321",
-        ranking: 3,
-        status: Status.Active,
-        birth: new Date()
-    };
+    const user1 = generateUser();
 
     beforeAll(async () => {
-        await db.insertInto("users").values(joe).execute();
+        await db.insertInto("users").values(user1).execute();
     });
 
     it("should update a user", async () => {
         const update = { name: "Jane doe", gender: Gender.Female };
-        const res = await req.patch("/users/1").send(update);
+        const res = await req.patch(`/users/${user1.id}`).send(update);
 
         expect(res.status).toBe(204);
     });
 
     describe("should return 409 if value is not unique", () => {
-        const jane = {
-            id: 2,
-            email: "jane.doe@example.com",
-            password:
-                "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
-            role: Role.User,
-            name: "Jane Doe",
-            gender: Gender.Female,
-            cpf: "12345678911",
-            phone: "11987654321",
-            ranking: 3,
-            status: Status.Active,
-            birth: new Date()
-        };
+        const user2 = generateUser();
 
         beforeEach(async () => {
-            await db.insertInto("users").values(joe).execute();
-            await db.insertInto("users").values(jane).execute();
+            await db.insertInto("users").values(user1).execute();
+            await db.insertInto("users").values(user2).execute();
         });
 
         it("returns 409 for not unique email", async () => {
             const update = {
-                email: "john.doe@example.com"
+                email: user1.email
             };
 
             const res = await req
-                .patch("/users/2")
+                .patch(`/users/${user2.id}`)
                 .set("Accept", "application/json")
                 .send(update);
 
@@ -194,11 +155,11 @@ describe("PATCH /users/:id", () => {
 
         it("returns 409 for not unique cpf", async () => {
             const update = {
-                cpf: "12345678900"
+                cpf: user1.cpf
             };
 
             const res = await req
-                .patch("/users/2")
+                .patch(`/users/${user2.id}`)
                 .set("Accept", "application/json")
                 .send(update);
 
@@ -207,11 +168,11 @@ describe("PATCH /users/:id", () => {
 
         it("returns 409 for not unique id", async () => {
             const update = {
-                id: 1
+                id: user1.id
             };
 
             const res = await req
-                .patch("/users/2")
+                .patch(`/users/${user2.id}`)
                 .set("Accept", "application/json")
                 .send(update);
 
@@ -221,33 +182,20 @@ describe("PATCH /users/:id", () => {
 });
 
 describe("DELETE /users/:id", () => {
-    const user = {
-        id: 1,
-        email: "john.doe@example.com",
-        password:
-            "$2b$10$7/0ByQkW7G3VhgXv7kjU2OEtVV6WvXpFeS5G.T/hINJfPQa8U3hCe",
-        role: Role.User,
-        name: "John Doe",
-        gender: Gender.Male,
-        cpf: "12345678900",
-        phone: "11987654321",
-        ranking: 3,
-        status: Status.Active,
-        birth: new Date()
-    };
+    const user = generateUser();
 
     beforeAll(async () => {
         await db.insertInto("users").values(user).execute();
     });
 
     it("deletes a user", async () => {
-        const res = await req.del("/users/1");
+        const res = await req.del(`/users/${user.id}`);
 
         expect(res.status).toBe(200);
     });
 
     it("returns 404 if user doesn't exists", async () => {
-        const res = await req.get("/users/22");
+        const res = await req.get("/users/0");
 
         expect(res.status).toBe(404);
         expect(res.body.error.scope).toMatch(Scope.NotFoundError);
