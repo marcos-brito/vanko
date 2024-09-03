@@ -27,7 +27,7 @@ export async function countPages(pagination: Pagination) {
         throw Error("Failed to count total of users");
     }
 
-    return Number(rows.count) / pagination.pageSize;
+    return Math.ceil(Number(rows.count) / pagination.pageSize);
 }
 
 export async function findById(id: number): Promise<SelectUser | undefined> {
