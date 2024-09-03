@@ -4,11 +4,11 @@
     "type": "module",
     "main": "./src/index.ts",
     "scripts": {
-        "start": "npx tsx ./src/app.ts",
-        "dev": "npx tsx watch ./src/app.ts",
+        "start": "npx tsx ./src/server.ts",
+        "dev": "npx tsx watch ./src/server.ts",
         "dev:up": "docker compose up -d",
         "dev:destroy": "docker compose down -v",
-        "test": "npm run dev:destroy && npm run dev:up && sleep 3 && npm run migrate && npx jest",
+        "test:integration": "npx jest --runInBand ./test/integration",
         "migrate": "npx kysely migrate:latest",
         "seed": "npx kysely seed:run"
     },
@@ -27,6 +27,7 @@
         "jest": "^29.7.0",
         "kysely-ctl": "^0.9.0",
         "supertest": "^7.0.0",
+        "testcontainers": "^10.13.0",
         "ts-jest": "^29.2.4",
         "ts-node": "^10.9.2",
         "tsx": "^4.17.0"
@@ -40,6 +41,7 @@
         "koa-body": "^6.0.1",
         "koa-logger": "^3.2.1",
         "pg": "^8.12.0",
+        "portfinder": "^1.0.32",
         "winston": "^3.14.1",
         "zod": "^3.23.8"
     }

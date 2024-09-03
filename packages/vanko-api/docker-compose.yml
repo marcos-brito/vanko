@@ -3,7 +3,7 @@ services:
         image: postgres:16.4-alpine
         env_file: ./.env
         ports:
-            - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+            - "${POSTGRES_PORT}:5432"
         volumes:
             - db:/var/lib/postgresql/data
 

@@ -1,13 +1,26 @@
-import supertest from "supertest";
-import { app } from "@/app.ts";
-import db from "@/db.ts";
+import { Database } from "@/db.ts";
 import { Gender, SelectUser } from "@/models/types/user.ts";
 import { presentUser, User } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
 import { generateMultipleUsers, generateUser } from "@/utils.ts";
 import { DEFAULT_PAGE_SIZE } from "@/schemas/index.ts";
+import { Kysely } from "kysely";
+import TestAgent from "supertest/lib/agent.js";
+import { App } from "../index.ts";
 
-const req = supertest(app.callback());
+const testApp = new App();
+let db: Kysely<Database>;
+let req: TestAgent;
+
+beforeAll(async () => {
+    await testApp.initialize();
+    db = testApp.db!;
+    req = testApp.req!;
+}, 15000);
+
+afterAll(async () => {
+    await testApp.destroy();
+});
 
 afterEach(async () => {
     await db.deleteFrom("users").execute();
