@@ -1,20 +1,17 @@
-import { Database } from "@/db.ts";
-import { Gender, SelectUser } from "@/models/types/user.ts";
-import { presentUser, User } from "@/presenters.ts";
+import { Gender } from "@/models/types/user.ts";
+import { User } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
-import { generateMultipleUsers, generateUser } from "@/utils.ts";
-import { DEFAULT_PAGE_SIZE } from "@/schemas/index.ts";
-import { Kysely } from "kysely";
+import { DEFAULT_PAGE_SIZE, UserCreateSchema } from "@/schemas/index.ts";
+import { sql } from "kysely";
 import TestAgent from "supertest/lib/agent.js";
 import { App } from "../index.ts";
+import { generateMock } from "@anatine/zod-mock";
 
 const testApp = new App();
-let db: Kysely<Database>;
 let req: TestAgent;
 
 beforeAll(async () => {
     await testApp.initialize();
-    db = testApp.db!;
     req = testApp.req!;
 }, 15000);
 
@@ -23,35 +20,41 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-    await db.deleteFrom("users").execute();
+    await sql`TRUNCATE TABLE users RESTART IDENTITY CASCADE`.execute(
+        testApp.db!
+    );
 });
 
 describe("GET /users", () => {
-    const users = generateMultipleUsers(100);
+    let users: Array<User> = [];
 
     beforeEach(async () => {
-        for (const user of users) {
-            await db.insertInto("users").values(user).execute();
-        }
+        const responses = await Promise.all(
+            Array.from({ length: 20 }, () =>
+                req.post("/users").send(generateMock(UserCreateSchema))
+            )
+        );
+
+        users = responses.map((res) => res.body.data);
     });
 
     it("should return the specified page", async () => {
-        const res = await req.get("/users?page=2&pageSize=5");
+        const res = await req.get("/users?page=2&pageSize=2");
         const users: Array<User> = res.body.data;
 
         expect(res.status).toBe(200);
-        expect(users.length).toBe(5);
+        expect(users.length).toBe(2);
         expect(res.headers).toMatchObject({
             "x-pagination-page": "2",
-            "x-pagination-page-size": "5",
-            "x-pagination-page-count": "20"
+            "x-pagination-page-size": "2",
+            "x-pagination-page-count": "10"
         });
     });
 
     it("should return at least one user in the last page", async () => {
-        let res = await req.get("/users?page=2&pageSize=5");
+        let res = await req.get("/users?page=2&pageSize=2");
         const lastPage = res.headers["x-pagination-page-count"];
-        res = await req.get(`/users?page=${lastPage}&pageSize=5`);
+        res = await req.get(`/users?page=${lastPage}&pageSize=10`);
 
         expect(res.status).toBe(200);
         expect(users.length).toBeGreaterThan(0);
@@ -66,24 +69,24 @@ describe("GET /users", () => {
         expect(res.headers).toMatchObject({
             "x-pagination-page": "1",
             "x-pagination-page-size": "20",
-            "x-pagination-page-count": "5"
+            "x-pagination-page-count": "1"
         });
     });
 });
 
 describe("GET /users/:id", () => {
-    const user = generateUser();
+    let user: User;
 
     beforeAll(async () => {
-        user.birth.setHours(0, 0, 0, 0);
-        await db.insertInto("users").values(user).execute();
+        user = (await req.post("/users").send(generateMock(UserCreateSchema)))
+            .body.data;
     });
 
     it("gets a user", async () => {
         const res = await req.get(`/users/${user.id}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.data).toEqual(presentUser(user as SelectUser));
+        expect(res.body.data).toEqual(user);
     });
 
     it("returns 404 if user doesn't exists", async () => {
@@ -102,15 +105,7 @@ describe("GET /users/:id", () => {
 });
 
 describe("POST /users/", () => {
-    const user = {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        cpf: "12345678900",
-        password: "Pass#123",
-        gender: Gender.Male,
-        phone: "11987654321",
-        birth: new Date()
-    };
+    const user = generateMock(UserCreateSchema);
 
     it("should create a user", async () => {
         const res = await req
@@ -132,10 +127,11 @@ describe("POST /users/", () => {
 });
 
 describe("PATCH /users/:id", () => {
-    const user1 = generateUser();
+    let user1: User;
 
     beforeAll(async () => {
-        await db.insertInto("users").values(user1).execute();
+        user1 = (await req.post("/users").send(generateMock(UserCreateSchema)))
+            .body.data;
     });
 
     it("should update a user", async () => {
@@ -146,11 +142,15 @@ describe("PATCH /users/:id", () => {
     });
 
     describe("should return 409 if value is not unique", () => {
-        const user2 = generateUser();
+        let user2: User;
 
         beforeEach(async () => {
-            await db.insertInto("users").values(user1).execute();
-            await db.insertInto("users").values(user2).execute();
+            user1 = (
+                await req.post("/users").send(generateMock(UserCreateSchema))
+            ).body.data;
+            user2 = (
+                await req.post("/users").send(generateMock(UserCreateSchema))
+            ).body.data;
         });
 
         it("returns 409 for not unique email", async () => {
@@ -195,10 +195,11 @@ describe("PATCH /users/:id", () => {
 });
 
 describe("DELETE /users/:id", () => {
-    const user = generateUser();
+    let user: User;
 
     beforeAll(async () => {
-        await db.insertInto("users").values(user).execute();
+        user = (await req.post("/users").send(generateMock(UserCreateSchema)))
+            .body.data;
     });
 
     it("deletes a user", async () => {
