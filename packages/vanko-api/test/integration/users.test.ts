@@ -1,7 +1,11 @@
 import { Gender } from "@/models/types/user.ts";
-import { User } from "@/presenters.ts";
+import { Address, User } from "@/presenters.ts";
 import { Scope } from "@/errors.ts";
-import { DEFAULT_PAGE_SIZE, UserCreateSchema } from "@/schemas/index.ts";
+import {
+    addressCreateSchema,
+    DEFAULT_PAGE_SIZE,
+    UserCreateSchema
+} from "@/schemas/index.ts";
 import { sql } from "kysely";
 import TestAgent from "supertest/lib/agent.js";
 import { App } from "../index.ts";
@@ -213,5 +217,57 @@ describe("DELETE /users/:id", () => {
 
         expect(res.status).toBe(404);
         expect(res.body.error.scope).toMatch(Scope.NotFoundError);
+    });
+});
+
+describe("GET users/:id/addresses/", () => {
+    let user: User;
+    let addresses: Array<Address> = [];
+
+    beforeAll(async () => {
+        user = (await req.post("/users").send(generateMock(UserCreateSchema)))
+            .body.data;
+
+        for (let _ = 0; _ < 4; _++) {
+            addresses.push(
+                (
+                    await req
+                        .post(`/users/${user.id}/addresses/`)
+                        .send(generateMock(addressCreateSchema))
+                ).body.data
+            );
+        }
+    });
+
+    it("should return all addresses belonging to the specified user", async () => {
+        const res = await req.get(`/users/${user.id}/addresses`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBe(addresses.length);
+    });
+
+    it("should return 404 if user was not found", async () => {
+        const res = await req.get(`/users/0/addresses`);
+
+        expect(res.status).toBe(404);
+    });
+});
+
+describe("POST users/:id/addresses/", () => {
+    const address = generateMock(addressCreateSchema);
+    let user: User;
+
+    beforeAll(async () => {
+        user = (await req.post("/users").send(generateMock(UserCreateSchema)))
+            .body.data;
+    });
+
+    it("should create an address for the specified user", async () => {
+        const res = await req.post(`/users/${user.id}/addresses`).send(address);
+        // besides these three everything should be the same
+        const { city, country, state, ...expected } = address;
+
+        expect(res.status).toBe(201);
+        expect(res.body.data).toMatchObject(expected);
     });
 });

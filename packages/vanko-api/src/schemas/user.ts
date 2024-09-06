@@ -1,12 +1,6 @@
 import { Gender, Role, Status } from "@/models/types/user.ts";
 import { z } from "zod";
 
-export const IdParameterSchema = z.object({
-    id: z.coerce.number()
-});
-
-export type IdParameter = z.infer<typeof IdParameterSchema>;
-
 export const UserCreateSchema = z.object({
     name: z.string().max(150),
     email: z.string().email(),

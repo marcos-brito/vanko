@@ -1,13 +1,15 @@
 import Router from "@koa/router";
 import { koaBody } from "koa-body";
 import * as userController from "@/controllers/user.ts";
+import * as addressController from "@/controllers/address.ts";
 import { validateBody, validateParam } from "@/middlewares/validate.ts";
 import {
+    addressCreateSchema,
     IdParameterSchema,
     UserCreateSchema,
     UserPatchSchema,
     UserUpdateSchema
-} from "@/schemas/user.ts";
+} from "@/schemas/index.ts";
 import { pagination } from "@/middlewares/pagination.ts";
 import { countPages } from "@/models/user.ts";
 
@@ -45,6 +47,20 @@ usersRouter.del(
     koaBody(),
     validateParam(IdParameterSchema),
     userController.del
+);
+
+usersRouter.get(
+    "/:id/addresses",
+    validateParam(IdParameterSchema),
+    addressController.byUser
+);
+
+usersRouter.post(
+    "/:id/addresses",
+    koaBody(),
+    validateParam(IdParameterSchema),
+    validateBody(addressCreateSchema),
+    addressController.create
 );
 
 export default usersRouter;

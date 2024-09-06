@@ -7,7 +7,7 @@ import {
     UserCreateReq,
     UserPatchReq,
     UserUpdateReq
-} from "@/schemas/user.ts";
+} from "@/schemas/index.ts";
 import argon2 from "argon2";
 
 export async function all(ctx: ApiContext<{}, {}, Array<User>>) {

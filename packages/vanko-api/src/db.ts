@@ -2,14 +2,24 @@ import pg, { PoolConfig } from "pg";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { UserTable } from "@/models/types/user.ts";
 import logger from "./logger.ts";
+import {
+    AddressTable,
+    CityTable,
+    CountryTable,
+    StateTable
+} from "./models/types/address.ts";
 
 const db = createConnection(defaultConfig());
+
 export interface Database {
     users: UserTable;
+    addresses: AddressTable;
+    countries: CountryTable;
+    states: StateTable;
+    citys: CityTable;
 }
 
 export function createConnection(config: PoolConfig): Kysely<Database> {
-    console.log(config);
     const dialect = new PostgresDialect({
         pool: new pg.Pool(config)
     });
