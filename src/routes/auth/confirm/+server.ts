@@ -1,7 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "@sveltejs/kit";
-
-import type { RequestHandler } from "../../(dashboard)/auth/confirm/$types";
+import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
     const token_hash = url.searchParams.get("token_hash");

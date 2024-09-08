@@ -14,7 +14,7 @@
     const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" action="/auth/signin" {...$$props} use:enhance>
+<form method="POST" action="?/signin" {...$$props} use:enhance>
     <Form.Field {form} name="email">
         <Form.Control let:attrs>
             <Form.Label>Email</Form.Label>
