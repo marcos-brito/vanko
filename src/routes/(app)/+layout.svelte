@@ -6,8 +6,27 @@
     import SigninForm from "$lib/components/signin-form.svelte";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+    import { showMessage } from "$lib/utils";
 
     export let data: LayoutData;
+
+    async function signout(): Promise<void> {
+        const { error } = await data.supabase.auth.signOut();
+
+        if (error) {
+            showMessage({
+                type: "error",
+                text: "Algo deu errado ao sair da sessão. Tente novamente."
+            });
+
+            return;
+        }
+
+        showMessage({
+            type: "success",
+            text: "Sessão encerrada."
+        });
+    }
 </script>
 
 <div class="p-8">
@@ -40,7 +59,7 @@
                                 ><a href="/addresses">Endereços</a
                                 ></DropdownMenu.Item
                             >
-                            <DropdownMenu.Item on:click={() => {}}
+                            <DropdownMenu.Item on:click={signout}
                                 >Sair</DropdownMenu.Item
                             >
                         </DropdownMenu.Group>
