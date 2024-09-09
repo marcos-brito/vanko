@@ -8,7 +8,8 @@ create table "public"."profiles" (
   birth date,
   is_admin boolean default FALSE,
   status varchar(8) check (status in ('ativo', 'inativo')) default 'ativo',
-  ranking smallint default 1
+  ranking smallint default 1,
+  PRIMARY KEY(id)
 );
 
 alter table public.profiles enable row level security;
