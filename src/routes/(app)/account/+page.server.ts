@@ -1,20 +1,19 @@
 import { Gender, updatePersonalInfoSchema } from "$lib/schemas/account.js";
-import { fail, redirect, type Actions } from "@sveltejs/kit";
+import { error, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad } from "./$types.js";
-import { findUserProfile } from "$lib/supabase/user.js";
+import { findCurrentUserProfile } from "$lib/supabase/user.js";
 import { invalidFormMessage } from "$lib/utils.js";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
-    const {
-        error,
-        data: { user }
-    } = await supabase.auth.getUser();
-    const profile = await findUserProfile(user!.id);
+    const profile = await findCurrentUserProfile(supabase);
 
-    if (error) {
-        console.log(error);
+    if (!profile) {
+        error(
+            500,
+            "Não conseguimos carregar as informações da sua conta. Tente novamente mais tarde."
+        );
     }
 
     const fields = {

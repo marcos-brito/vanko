@@ -4,11 +4,21 @@
     import * as Form from "$lib/components/ui/form";
     import { Input } from "$lib/components/ui/input";
     import { zod } from "sveltekit-superforms/adapters";
+    import { invalidFormMessage, showMessage } from "$lib/utils";
 
     export let data: SuperValidated<SigninSchema>;
 
     const form = superForm(data, {
-        validators: zod(signinSchema)
+        validators: zod(signinSchema),
+        onUpdated({ form }) {
+            if (form.message) {
+                showMessage(form.message);
+            }
+
+            if (!form.valid) {
+                showMessage(invalidFormMessage);
+            }
+        }
     });
 
     const { form: formData, enhance } = form;
