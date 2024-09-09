@@ -7,6 +7,7 @@
     import * as Sheet from "$lib/components/ui/sheet/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { showMessage } from "$lib/utils";
+    import { goto } from "$app/navigation";
 
     export let data: LayoutData;
 
@@ -26,6 +27,8 @@
             type: "success",
             text: "Sessão encerrada."
         });
+
+        goto("/");
     }
 </script>
 
