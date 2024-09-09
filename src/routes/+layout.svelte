@@ -2,7 +2,7 @@
     import { ModeWatcher } from "mode-watcher";
     import "../app.css";
     import { MoonIcon, SunIcon } from "lucide-svelte";
-
+    import { Toaster } from "$lib/components/ui/sonner";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button";
     import { invalidate } from "$app/navigation";
@@ -37,4 +37,5 @@
     />
     <span class="sr-only">Toggle theme</span>
 </Button>
+<Toaster position="top-center" />
 <slot />

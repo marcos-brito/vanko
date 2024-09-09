@@ -17,7 +17,13 @@ declare global {
         }
         // interface PageState {}
         // interface Platform {}
+        namespace Superforms {
+            type Message = {
+                type: "error" | "success" | "warning";
+                text: string;
+            };
+        }
     }
 }
 
-export { };
+export {};
