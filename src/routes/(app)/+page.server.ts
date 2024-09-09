@@ -1,5 +1,6 @@
 import { signinSchema, signupSchema } from "$lib/schemas";
-import { fail, redirect, type Actions } from "@sveltejs/kit";
+import { invalidFormMessage } from "$lib/utils";
+import { redirect, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
@@ -8,9 +9,7 @@ export const actions: Actions = {
         const form = await superValidate(request, zod(signupSchema));
 
         if (!form.valid) {
-            return fail(400, {
-                form
-            });
+            return message(form, invalidFormMessage);
         }
 
         const { error } = await supabase.auth.signUp({
@@ -36,9 +35,7 @@ export const actions: Actions = {
         const form = await superValidate(request, zod(signinSchema));
 
         if (!form.valid) {
-            return fail(400, {
-                form
-            });
+            return message(form, invalidFormMessage);
         }
 
         const { error } = await supabase.auth.signInWithPassword({
@@ -47,10 +44,12 @@ export const actions: Actions = {
         });
 
         if (error) {
-            console.error(error);
-            redirect(303, "/auth/error");
-        } else {
-            redirect(303, "/");
+            return message(form, {
+                type: "error",
+                text: "Email ou senha inválidos"
+            });
         }
+
+        redirect(303, "/");
     }
 };
