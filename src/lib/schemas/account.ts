@@ -16,3 +16,16 @@ export const updatePersonalInfoSchema = z.object({
 });
 
 export type UpdatePersonalInfoSchema = z.infer<typeof updatePersonalInfoSchema>;
+
+export const changePasswordSchema = z
+    .object({
+        old: z.string().min(8),
+        new: z.string().min(8),
+        confirm: z.string().min(8)
+    })
+    .refine((data) => data.new == data.confirm, {
+        message: "Senhas não correspondem",
+        path: ["confirm"]
+    });
+
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;

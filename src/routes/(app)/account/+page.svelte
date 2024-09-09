@@ -6,6 +6,7 @@
     import type { PageData } from "./$types";
     import UpdatePersonalInfoForm from "$lib/components/update-personal-info-form.svelte";
     import DataField from "$lib/components/data-field.svelte";
+    import ChangePasswordForm from "$lib/components/change-password-form.svelte";
 
     export let data: PageData;
 
@@ -55,11 +56,31 @@
                     </Sheet.Header>
                     <UpdatePersonalInfoForm
                         class="flex flex-col gap-2"
-                        data={data.form}
+                        data={data.form.updateInfo}
                     />
                 </Sheet.Content>
             </Sheet.Root>
-            <Button>Alterar senha</Button>
+            <Sheet.Root>
+                <Sheet.Trigger>
+                    <Button class="w-full">Alterar senha</Button>
+                </Sheet.Trigger>
+                <Sheet.Content
+                    side="right"
+                    class="flex flex-col gap-4 overflow-scroll"
+                >
+                    <Sheet.Header>
+                        <Sheet.Title>Alterar senha</Sheet.Title>
+                        <Sheet.Description>
+                            Edite seus dados pessoais. Caso altere seu email,
+                            lembre-se de verificar sua caixa de entrada.
+                        </Sheet.Description>
+                    </Sheet.Header>
+                    <ChangePasswordForm
+                        class="flex flex-col gap-2"
+                        data={data.form.changePassword}
+                    />
+                </Sheet.Content>
+            </Sheet.Root>
         </div>
         <article>
             <h1 class="text-destructive">Excluir conta</h1>

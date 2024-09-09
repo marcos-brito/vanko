@@ -45,7 +45,7 @@
         : undefined;
 </script>
 
-<form method="POST" action="/account" {...$$props} use:enhance>
+<form method="POST" action="/account?/updateInfo" {...$$props} use:enhance>
     <Form.Field {form} name="name">
         <Form.Control let:attrs>
             <Form.Label>Nome</Form.Label>

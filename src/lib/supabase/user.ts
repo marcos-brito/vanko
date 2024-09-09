@@ -28,14 +28,40 @@ export async function findCurrentUserProfile(
         data: { user }
     } = await supabase.auth.getUser();
 
-    if (err) {
-        return null;
-    }
+    if (err) return null;
 
     const result = await findUserProfile(user!.id);
-    if (!result) {
+
+    return result;
+}
+
+export async function verifyCurrentUserPassword(
+    supabaseClient: SupabaseClient,
+    password: string
+): Promise<Result<boolean>> {
+    const { data, error } = await supabaseClient.auth.getUser();
+    if (error) return null;
+
+    const matches = await UserPasswordMatch(data.user.id, password);
+
+    return matches;
+}
+
+async function UserPasswordMatch(
+    userId: string,
+    password: string
+): Promise<Result<boolean>> {
+    const { data: matches, error } = await supabase.rpc(
+        "verify_user_password",
+        {
+            user_id: userId,
+            password
+        }
+    );
+
+    if (error) {
         return null;
     }
 
-    return result;
+    return matches;
 }

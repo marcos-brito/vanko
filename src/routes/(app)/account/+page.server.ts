@@ -1,9 +1,16 @@
-import { Gender, updatePersonalInfoSchema } from "$lib/schemas/account.js";
+import {
+    changePasswordSchema,
+    Gender,
+    updatePersonalInfoSchema
+} from "$lib/schemas/account.js";
 import { error, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad } from "./$types.js";
-import { findCurrentUserProfile } from "$lib/supabase/user.js";
+import {
+    findCurrentUserProfile,
+    verifyCurrentUserPassword
+} from "$lib/supabase/user.js";
 import { invalidFormMessage } from "$lib/utils.js";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
@@ -26,7 +33,13 @@ export const load: PageServerLoad = async ({ locals: { supabase } }) => {
     };
 
     return {
-        form: await superValidate(fields, zod(updatePersonalInfoSchema)),
+        form: {
+            updateInfo: await superValidate(
+                fields,
+                zod(updatePersonalInfoSchema)
+            ),
+            changePassword: await superValidate(zod(changePasswordSchema))
+        },
         profile: {
             nome: fields.name,
             email: fields.email,
@@ -39,7 +52,7 @@ export const load: PageServerLoad = async ({ locals: { supabase } }) => {
 };
 
 export const actions: Actions = {
-    default: async ({ request, locals: { supabase } }) => {
+    updateInfo: async ({ request, locals: { supabase } }) => {
         const form = await superValidate(
             request,
             zod(updatePersonalInfoSchema)
@@ -65,6 +78,41 @@ export const actions: Actions = {
         return message(form, {
             type: "success",
             text: "Dados alterados"
+        });
+    },
+    changePassword: async ({ request, locals: { supabase } }) => {
+        const form = await superValidate(request, zod(changePasswordSchema));
+
+        if (!form.valid) {
+            return message(form, invalidFormMessage);
+        }
+
+        const passwordMatch = await verifyCurrentUserPassword(
+            supabase,
+            form.data.old
+        );
+
+        if (!passwordMatch) {
+            return message(form, {
+                type: "error",
+                text: "A senha digitada é diferente da senha atual"
+            });
+        }
+
+        const { error } = await supabase.auth.updateUser({
+            password: form.data.new
+        });
+
+        if (error) {
+            return message(form, {
+                type: "error",
+                text: "Algo não deu certo ao mudar sua senha. Tente novamente mais tarde."
+            });
+        }
+
+        return message(form, {
+            type: "success",
+            text: "Senha alterada"
         });
     }
 };
