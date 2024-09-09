@@ -5,6 +5,7 @@
     import SignupForm from "$lib/components/signup-form.svelte";
     import SigninForm from "$lib/components/signin-form.svelte";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 
     export let data: LayoutData;
 </script>
@@ -22,9 +23,29 @@
                 <ShoppingCartIcon />
             </a>
             {#if data.session}
-                <a href="/account">
-                    <UserIcon />
-                </a>
+                <DropdownMenu.Root disableFocusFirstItem loop>
+                    <DropdownMenu.Trigger>
+                        <UserIcon />
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content class="mt-2">
+                        <DropdownMenu.Group>
+                            <DropdownMenu.Item
+                                ><a href="/account">Conta</a></DropdownMenu.Item
+                            >
+                            <DropdownMenu.Item
+                                ><a href="/orders/">Pedidos</a
+                                ></DropdownMenu.Item
+                            >
+                            <DropdownMenu.Item
+                                ><a href="/addresses">Endereços</a
+                                ></DropdownMenu.Item
+                            >
+                            <DropdownMenu.Item on:click={() => {}}
+                                >Sair</DropdownMenu.Item
+                            >
+                        </DropdownMenu.Group>
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
             {:else}
                 <Sheet.Root>
                     <Sheet.Trigger>
