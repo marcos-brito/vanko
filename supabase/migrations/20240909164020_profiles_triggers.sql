@@ -1,24 +1,3 @@
-CREATE TYPE status AS ENUM('ativo', 'inativo');
-
-CREATE TYPE gender AS ENUM('feminino', 'masculino', 'outro');
-
-CREATE TABLE public.profiles (
-    id UUID NOT NULL,
-    name VARCHAR(150),
-    email VARCHAR(254),
-    cpf CHAR(11),
-    phone CHAR(11),
-    gender gender,
-    birth DATE,
-    is_admin BOOLEAN DEFAULT FALSE,
-    status status,
-    ranking SMALLINT DEFAULT 1,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES auth.users (id) ON DELETE CASCADE
-);
-
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
 CREATE FUNCTION public.handle_new_user () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET
     search_path = '' AS $$

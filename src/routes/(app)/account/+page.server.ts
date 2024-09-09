@@ -10,7 +10,7 @@ import type { PageServerLoad } from "./$types.js";
 import {
     findCurrentUserProfile,
     verifyCurrentUserPassword
-} from "$lib/supabase/user.js";
+} from "$lib/database/user.js";
 import { invalidFormMessage } from "$lib/utils.js";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
@@ -24,8 +24,8 @@ export const load: PageServerLoad = async ({ locals: { supabase } }) => {
     }
 
     const fields = {
-        name: profile.name!,
-        email: profile.email!,
+        name: profile.name,
+        email: profile.email,
         cpf: profile.cpf || undefined,
         phone: profile.phone || undefined,
         gender: (profile.gender as Gender) || undefined,
