@@ -1,60 +1,64 @@
-create table "public"."profiles" (
-  id uuid not null references auth.users on delete cascade,
-  name varchar(150),
-  email varchar(254),
-  cpf char(11),
-  phone char(11),
-  gender varchar(9) check (gender in ('feminino', 'masculino', 'outro')),
-  birth date,
-  is_admin boolean default FALSE,
-  status varchar(8) check (status in ('ativo', 'inativo')) default 'ativo',
-  ranking smallint default 1,
-  PRIMARY KEY(id)
+CREATE TYPE status AS ENUM('ativo', 'inativo');
+
+CREATE TYPE gender AS ENUM('feminino', 'masculino', 'outro');
+
+CREATE TABLE public.profiles (
+    id UUID NOT NULL,
+    name VARCHAR(150),
+    email VARCHAR(254),
+    cpf CHAR(11),
+    phone CHAR(11),
+    gender gender,
+    birth DATE,
+    is_admin BOOLEAN DEFAULT FALSE,
+    status status,
+    ranking SMALLINT DEFAULT 1,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES auth.users (id) ON DELETE CASCADE
 );
 
-alter table public.profiles enable row level security;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
-create
-or replace function public.handle_new_user () returns trigger language plpgsql security definer
-set
-  search_path = '' as $$
-begin
-  insert into public.profiles (
+CREATE FUNCTION public.handle_new_user () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET
+    search_path = '' AS $$
+BEGIN
+  INSERT INTO public.profiles (
     id,
     name
   )
-  values (
+  VALUES (
     new.id,
     new.raw_user_meta_data ->> 'name'
   );
-  return new;
-end;
+  RETURN new;
+END;
 $$;
 
-create trigger on_auth_user_created
-after insert on auth.users for each row
-execute procedure public.handle_new_user ();
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users FOR EACH ROW
+EXECUTE PROCEDURE public.handle_new_user ();
 
 CREATE
 OR REPLACE FUNCTION public.handle_user_update () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET
-  search_path = '' AS $$
+    search_path = '' AS $$
 BEGIN
   UPDATE public.profiles
   SET
-    name = NEW.raw_user_meta_data ->> 'name',
-    email = NEW.raw_user_meta_data ->> 'email',
-    cpf = NEW.raw_user_meta_data ->> 'cpf',
-    phone = NEW.raw_user_meta_data ->> 'phone',
-    gender = NEW.raw_user_meta_data ->> 'gender',
-birth = COALESCE(
-                NULLIF(
-                  NULLIF(NEW.raw_user_meta_data ->> 'birth', ''),
-                  'null'
-                )::date,
-                NULL
-              )  WHERE id = NEW.id;
-  RETURN NEW;
+    name = new.raw_user_meta_data ->> 'name',
+    email = new.raw_user_meta_data ->> 'email',
+    cpf = new.raw_user_meta_data ->> 'cpf',
+    phone = new.raw_user_meta_data ->> 'phone',
+    gender = COALESCE(NULLIF(new.raw_user_meta_data ->> 'gender', '')::public.gender, NULL),
+    birth = COALESCE(
+                    NULLIF(
+                      NULLIF(NEW.raw_user_meta_data ->> 'birth', ''),
+                      'null'
+                    )::date,
+                    NULL
+                  )  WHERE id = new.id;
+  RETURN new;
 END;
 $$;
 
