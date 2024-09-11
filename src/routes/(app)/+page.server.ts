@@ -7,10 +7,7 @@ import { zod } from "sveltekit-superforms/adapters";
 export const actions: Actions = {
     signup: async ({ request, locals: { supabase } }) => {
         const form = await superValidate(request, zod(signupSchema));
-
-        if (!form.valid) {
-            return message(form, invalidFormMessage);
-        }
+        if (!form.valid) return message(form, invalidFormMessage);
 
         const { error } = await supabase.auth.signUp({
             email: form.data.email,
@@ -23,20 +20,17 @@ export const actions: Actions = {
         });
 
         if (error) {
-            message(form, {
+            return message(form, {
                 type: "error",
                 text: "Não conseguimos criar sua conta. Tente novamente mais tarde."
             });
         }
 
-        redirect(303, "/");
+        return redirect(303, "/");
     },
     signin: async ({ request, locals: { supabase } }) => {
         const form = await superValidate(request, zod(signinSchema));
-
-        if (!form.valid) {
-            return message(form, invalidFormMessage);
-        }
+        if (!form.valid) return message(form, invalidFormMessage);
 
         const { error } = await supabase.auth.signInWithPassword({
             email: form.data.email,
