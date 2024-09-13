@@ -17,7 +17,7 @@
             "Parece que algo deu errado. Estamos trabalhando nisso."}
     </p>
     <p class="text-xs">
-        code: {$page.error?.message || ""}
+        code: {$page.status || "500"}
     </p>
     <Button href="/">Volte para o início</Button>
 </main>
