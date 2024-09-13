@@ -2,13 +2,13 @@ import {
     changePasswordSchema,
     Gender,
     updatePersonalInfoSchema
-} from "$lib/schemas/account.js";
+} from "$lib/schemas";
 import { error, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import type { PageServerLoad } from "./$types.js";
 import { findUserProfile, verifyUserPassword } from "$lib/database/user.js";
-import { invalidFormMessage } from "$lib/utils.js";
+import type { PageServerLoad } from "./$types";
+import { invalidFormMessage } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
     const profile = await findUserProfile(supabase);

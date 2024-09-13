@@ -1,6 +1,6 @@
 <script lang="ts">
     import Button from "$lib/components/ui/button/button.svelte";
-    import * as Sheet from "$lib/components/ui/sheet/index.js";
+    import * as Sheet from "$lib/components/ui/sheet";
     import type { PageData } from "./$types";
     import UpdatePersonalInfoForm from "$lib/components/update-personal-info-form.svelte";
     import DataField from "$lib/components/data-field.svelte";
