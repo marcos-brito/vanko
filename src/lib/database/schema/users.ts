@@ -1,3 +1,5 @@
+import { relations } from "drizzle-orm";
+import { addresses } from "./index";
 import {
     pgTable,
     smallint,
@@ -6,14 +8,11 @@ import {
     uuid,
     pgEnum,
     date,
-    boolean,
-    serial,
-    integer
+    boolean
 } from "drizzle-orm/pg-core";
 
 export const genderEnum = pgEnum("gender", ["masculino", "feminino", "outro"]);
 export const statusEnum = pgEnum("status", ["ativo", "inativo"]);
-export const residenceEnum = pgEnum("residence", ["casa", "apartamento"]);
 
 export const profiles = pgTable("profiles", {
     id: uuid("id").primaryKey(),
@@ -29,3 +28,7 @@ export const profiles = pgTable("profiles", {
 });
 
 export type Profile = typeof profiles.$inferSelect;
+
+export const usersRelations = relations(profiles, ({ many }) => ({
+    addresses: many(addresses)
+}));
