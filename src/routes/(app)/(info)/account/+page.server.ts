@@ -6,8 +6,8 @@ import {
 import { error, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { findUserProfile, verifyUserPassword } from "$lib/database/user.js";
 import type { PageServerLoad } from "./$types";
+import { findUserProfile, verifyUserPassword } from "$lib/database/users";
 import { invalidFormMessage } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {

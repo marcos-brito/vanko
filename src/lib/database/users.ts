@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { db, supabase } from "./index";
-import { profiles, type Profile } from "./schema";
+import { profiles, addresses, type Profile } from "./schema";
 import { eq } from "drizzle-orm";
 
 export async function findUserProfile(
@@ -12,6 +12,27 @@ export async function findUserProfile(
 
     return await db.query.profiles.findFirst({
         where: eq(profiles.id, data.user.id)
+    });
+}
+
+export async function findUserAddresses(userId: string) {
+    return await db.query.addresses.findMany({
+        columns: {
+            user: false
+        },
+        with: {
+            country: {
+                columns: {
+                    name: true
+                }
+            },
+            state: {
+                columns: {
+                    name: true
+                }
+            }
+        },
+        where: eq(addresses.user, userId)
     });
 }
 
