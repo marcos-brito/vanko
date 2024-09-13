@@ -3,16 +3,18 @@ import {
     Gender,
     updatePersonalInfoSchema
 } from "$lib/schemas";
-import { error, type Actions } from "@sveltejs/kit";
+import { error, redirect, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad } from "./$types";
 import { findUserProfile, verifyUserPassword } from "$lib/database/users";
-import { invalidFormMessage } from "$lib/utils";
+import { genericError, invalidFormMessage } from "$lib/utils";
 
-export const load: PageServerLoad = async ({ locals: { supabase } }) => {
-    const profile = await findUserProfile(supabase);
+export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
+    const { user } = await safeGetSession();
+    if (!user) redirect(401, "/");
 
+    const profile = await findUserProfile(user?.id);
     if (!profile) {
         error(
             500,
@@ -77,14 +79,17 @@ export const actions: Actions = {
             text: "Dados alterados"
         });
     },
-    changePassword: async ({ request, locals: { supabase } }) => {
+    changePassword: async ({
+        request,
+        locals: { safeGetSession, supabase }
+    }) => {
         const form = await superValidate(request, zod(changePasswordSchema));
+        if (!form.valid) return message(form, invalidFormMessage);
 
-        if (!form.valid) {
-            return message(form, invalidFormMessage);
-        }
+        const { user } = await safeGetSession();
+        if (!user) return message(form, genericError);
 
-        const passwordMatch = await verifyUserPassword(supabase, form.data.old);
+        const passwordMatch = await verifyUserPassword(user.id, form.data.old);
 
         if (!passwordMatch) {
             return message(form, {

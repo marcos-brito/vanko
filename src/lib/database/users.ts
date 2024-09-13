@@ -4,14 +4,10 @@ import { profiles, addresses, type Profile } from "./schema";
 import { eq } from "drizzle-orm";
 
 export async function findUserProfile(
-    supabase: SupabaseClient
+    id: string
 ): Promise<Profile | undefined> {
-    const { data } = await supabase.auth.getUser();
-
-    if (!data.user) return undefined;
-
     return await db.query.profiles.findFirst({
-        where: eq(profiles.id, data.user.id)
+        where: eq(profiles.id, id)
     });
 }
 
@@ -37,14 +33,11 @@ export async function findUserAddresses(userId: string) {
 }
 
 export async function verifyUserPassword(
-    supabaseClient: SupabaseClient,
+    id: string,
     password: string
 ): Promise<boolean | undefined> {
-    const { data: userData } = await supabaseClient.auth.getUser();
-    if (!userData.user) return undefined;
-
     const { data } = await supabase.rpc("verify_user_password", {
-        user_id: userData.user.id,
+        user_id: id,
         password
     });
 
