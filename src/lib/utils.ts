@@ -9,6 +9,11 @@ export const invalidFormMessage: App.Superforms.Message = {
     text: "Haviam alguns dados inválidos no formulário. Corrija e tente novamente"
 };
 
+export const genericError: App.Superforms.Message = {
+    type: "error",
+    text: "Tivemos alguns problemas acessando seus dados. Tente novamente mais tarde"
+};
+
 export function showMessage(message: App.Superforms.Message) {
     switch (message.type) {
         case "success":
