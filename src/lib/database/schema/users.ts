@@ -16,8 +16,8 @@ export const statusEnum = pgEnum("status", ["ativo", "inativo"]);
 
 export const profiles = pgTable("profiles", {
     id: uuid("id").primaryKey(),
-    name: varchar("name", { length: 150 }).notNull(),
-    email: varchar("email", { length: 254 }).notNull(),
+    name: varchar("name", { length: 150 }),
+    email: varchar("email", { length: 254 }),
     cpf: char("cpf", { length: 11 }),
     phone: char("phone", { length: 11 }),
     gender: genderEnum("gender"),

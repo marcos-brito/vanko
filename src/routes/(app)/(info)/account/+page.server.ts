@@ -23,8 +23,8 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     }
 
     const fields = {
-        name: profile.name,
-        email: profile.email,
+        name: profile.name!,
+        email: profile.email!,
         cpf: profile.cpf || undefined,
         phone: profile.phone || undefined,
         gender: (profile.gender as Gender) || undefined,
