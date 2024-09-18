@@ -1,9 +1,10 @@
 import {
     date,
     integer,
+    numeric,
     pgTable,
+    real,
     serial,
-    smallint,
     text,
     varchar
 } from "drizzle-orm/pg-core";
@@ -17,10 +18,10 @@ export const products = pgTable("products", {
     status: statusEnum("status").default("ativo"),
     year: date("year").notNull(),
     bar_code: integer("bar_code").notNull(),
-    cost: integer("cost").notNull(),
-    weight: smallint("weight").notNull(),
-    height: smallint("height").notNull(),
-    width: smallint("width").notNull(),
+    cost: numeric("cost", { precision: 5, scale: 2 }).notNull(),
+    weight: real("weight").notNull(),
+    height: real("height").notNull(),
+    width: real("width").notNull(),
     pricing_group: integer("pricing_group")
         .references(() => pricingGroups.id)
         .notNull(),
@@ -35,7 +36,10 @@ export const products = pgTable("products", {
 export const pricingGroups = pgTable("pricing_groups", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
-    profit_margin: smallint("profit_margin").notNull()
+    profit_margin: numeric("profit_margin", {
+        precision: 1,
+        scale: 2
+    }).notNull()
 });
 
 export const categories = pgTable("categories", {
