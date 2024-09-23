@@ -1,10 +1,10 @@
 import {
-    date,
     integer,
     numeric,
     pgTable,
     real,
     serial,
+    smallint,
     text,
     varchar
 } from "drizzle-orm/pg-core";
@@ -14,10 +14,10 @@ export const products = pgTable("products", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 150 }).notNull(),
     description: text("description").notNull(),
-    number: integer("number").notNull(),
+    number: smallint("number").notNull(),
     status: statusEnum("status").default("ativo"),
-    year: date("year").notNull(),
-    bar_code: integer("bar_code").notNull(),
+    year: smallint("year").notNull(),
+    bar_code: varchar("bar_code", { length: 13 }).notNull(),
     cost: numeric("cost", { precision: 5, scale: 2 }).notNull(),
     weight: real("weight").notNull(),
     height: real("height").notNull(),
@@ -33,21 +33,26 @@ export const products = pgTable("products", {
         .notNull()
 });
 
+export type Product = typeof products.$inferSelect;
+
 export const pricingGroups = pgTable("pricing_groups", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
-    profit_margin: numeric("profit_margin", {
-        precision: 1,
-        scale: 2
-    }).notNull()
+    profit_margin: real("profit_margin").notNull()
 });
+
+export type PricingGroup = typeof pricingGroups.$inferSelect;
 
 export const categories = pgTable("categories", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
 
+export type Category = typeof categories.$inferSelect;
+
 export const types = pgTable("types", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
+
+export type Type = typeof types.$inferSelect;
