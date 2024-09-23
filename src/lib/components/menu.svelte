@@ -13,11 +13,11 @@
     export let routes: Array<Route>;
 </script>
 
-<aside class="flex h-full flex-col gap-4 items-start min-w-48 justify-center">
+<aside class="flex flex-col gap-2 items-start justify-center">
     {#each routes as route}
-        <Button variant="link" href={route.target}>
-            <svelte:component this={route.icon} class="mr-3" />
-            <p>{route.alias}</p>
+        <Button variant="link" href={route.target} class="flex gap-2">
+            <svelte:component this={route.icon} size="16" />
+            <p class="text-sm">{route.alias}</p>
         </Button>
     {/each}
 </aside>

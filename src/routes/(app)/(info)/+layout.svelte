@@ -1,5 +1,5 @@
 <script lang="ts">
-    import SideBar from "$lib/components/side-bar.svelte";
+    import Menu from "$lib/components/menu.svelte";
     import { UserIcon, MapPinIcon, BoxIcon } from "lucide-svelte";
 
     const routes = [
@@ -21,7 +21,9 @@
     ];
 </script>
 
-<section class="flex flex-col md:flex-row">
-    <SideBar {routes} />
+<section class="flex flex-col gap-12 md:flex-row">
+    <div>
+        <Menu {routes} />
+    </div>
     <slot />
 </section>
