@@ -6,21 +6,21 @@ CREATE TABLE IF NOT EXISTS "categories" (
 CREATE TABLE IF NOT EXISTS "pricing_groups" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(50) NOT NULL,
-	"profit_margin" smallint NOT NULL
+	"profit_margin" real NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "products" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(150) NOT NULL,
 	"description" text NOT NULL,
-	"number" integer NOT NULL,
+	"number" smallint NOT NULL,
 	"status" "status" DEFAULT 'ativo',
-	"year" date NOT NULL,
-	"bar_code" integer NOT NULL,
-	"cost" integer NOT NULL,
-	"weight" smallint NOT NULL,
-	"height" smallint NOT NULL,
-	"width" smallint NOT NULL,
+	"year" smallint NOT NULL,
+	"bar_code" varchar(13) NOT NULL,
+	"cost" numeric(5, 2) NOT NULL,
+	"weight" real NOT NULL,
+	"height" real NOT NULL,
+	"width" real NOT NULL,
 	"pricing_group" integer NOT NULL,
 	"category" integer NOT NULL,
 	"type" integer NOT NULL

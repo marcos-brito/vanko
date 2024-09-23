@@ -1,5 +1,5 @@
 {
-  "id": "1e91124b-9263-441a-81d6-e6d05a6b0d9b",
+  "id": "46cd052d-40e2-4181-a178-58f797182352",
   "prevId": "802f920f-59db-4afa-92b5-056170d7dbe1",
   "version": "7",
   "dialect": "postgresql",
@@ -301,7 +301,7 @@
         },
         "profit_margin": {
           "name": "profit_margin",
-          "type": "smallint",
+          "type": "real",
           "primaryKey": false,
           "notNull": true
         }
@@ -335,7 +335,7 @@
         },
         "number": {
           "name": "number",
-          "type": "integer",
+          "type": "smallint",
           "primaryKey": false,
           "notNull": true
         },
@@ -349,37 +349,37 @@
         },
         "year": {
           "name": "year",
-          "type": "date",
+          "type": "smallint",
           "primaryKey": false,
           "notNull": true
         },
         "bar_code": {
           "name": "bar_code",
-          "type": "integer",
+          "type": "varchar(13)",
           "primaryKey": false,
           "notNull": true
         },
         "cost": {
           "name": "cost",
-          "type": "integer",
+          "type": "numeric(5, 2)",
           "primaryKey": false,
           "notNull": true
         },
         "weight": {
           "name": "weight",
-          "type": "smallint",
+          "type": "real",
           "primaryKey": false,
           "notNull": true
         },
         "height": {
           "name": "height",
-          "type": "smallint",
+          "type": "real",
           "primaryKey": false,
           "notNull": true
         },
         "width": {
           "name": "width",
-          "type": "smallint",
+          "type": "real",
           "primaryKey": false,
           "notNull": true
         },
