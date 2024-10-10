@@ -27,8 +27,6 @@ export const profiles = pgTable("profiles", {
     ranking: smallint("ranking").default(1)
 });
 
-export type Profile = typeof profiles.$inferSelect;
-
 export const usersRelations = relations(profiles, ({ many }) => ({
     addresses: many(addresses)
 }));

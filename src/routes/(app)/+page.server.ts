@@ -1,4 +1,4 @@
-import { signinSchema, signupSchema } from "$lib/schemas";
+import { signinSchema, signupSchema } from "$lib/auth/schema";
 import { invalidFormMessage } from "$lib/utils";
 import { redirect, type Actions } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";

@@ -2,9 +2,9 @@
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Sheet from "$lib/components/ui/sheet";
     import type { PageData } from "./$types";
-    import UpdatePersonalInfoForm from "$lib/components/update-personal-info-form.svelte";
+    import UpdatePersonalInfoForm from "$lib/account/components/update-personal-info-form.svelte";
     import DataField from "$lib/components/data-field.svelte";
-    import ChangePasswordForm from "$lib/components/change-password-form.svelte";
+    import ChangePasswordForm from "$lib/account/components/change-password-form.svelte";
 
     export let data: PageData;
 </script>

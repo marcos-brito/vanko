@@ -9,6 +9,7 @@ import {
     varchar
 } from "drizzle-orm/pg-core";
 import { statusEnum } from "./users";
+import { relations } from "drizzle-orm";
 
 export const products = pgTable("products", {
     id: serial("id").primaryKey(),
@@ -33,7 +34,20 @@ export const products = pgTable("products", {
         .notNull()
 });
 
-export type Product = typeof products.$inferSelect;
+export const productsRelations = relations(products, ({ one }) => ({
+    category: one(categories, {
+        fields: [products.category],
+        references: [categories.id]
+    }),
+    type: one(types, {
+        fields: [products.type],
+        references: [types.id]
+    }),
+    pricing_group: one(pricingGroups, {
+        fields: [products.pricing_group],
+        references: [pricingGroups.id]
+    })
+}));
 
 export const pricingGroups = pgTable("pricing_groups", {
     id: serial("id").primaryKey(),
@@ -41,18 +55,12 @@ export const pricingGroups = pgTable("pricing_groups", {
     profit_margin: real("profit_margin").notNull()
 });
 
-export type PricingGroup = typeof pricingGroups.$inferSelect;
-
 export const categories = pgTable("categories", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
 
-export type Category = typeof categories.$inferSelect;
-
 export const types = pgTable("types", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
-
-export type Type = typeof types.$inferSelect;

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { signinSchema, type SigninSchema } from "$lib/schemas";
+    import { signinSchema, type SigninSchema } from "../schema";
     import { superForm, type SuperValidated } from "sveltekit-superforms";
     import * as Form from "$lib/components/ui/form";
     import { Input } from "$lib/components/ui/input";

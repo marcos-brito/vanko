@@ -1,9 +1,5 @@
 import { z } from "zod";
-
-export enum ResidenceType {
-    HOUSE = "casa",
-    APARTMENT = "apartamento"
-}
+import { ResidenceType } from "./types";
 
 export const addressSchema = z.object({
     name: z.string().min(1).max(50),

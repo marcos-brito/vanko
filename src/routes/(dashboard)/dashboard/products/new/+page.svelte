@@ -1,5 +1,5 @@
 <script lang="ts">
-    import NewProductForm from "$lib/components/new-product-form.svelte";
+    import NewProductForm from "$lib/product/components/new-product-form.svelte";
     import type { PageData } from "./$types";
 
     export let data: PageData;

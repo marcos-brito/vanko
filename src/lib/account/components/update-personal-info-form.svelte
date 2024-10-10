@@ -1,20 +1,20 @@
 <script lang="ts">
+    import * as Form from "$lib/components/ui/form";
+    import * as Select from "$lib/components/ui/select";
+    import { Input } from "$lib/components/ui/input";
+    import { zod } from "sveltekit-superforms/adapters";
+    import { invalidFormMessage, showMessage } from "$lib/utils";
+    import { SheetClose } from "$lib/components/ui/sheet";
+    import {
+        updatePersonalInfoSchema,
+        type UpdatePersonalInfoSchema,
+        Gender
+    } from "../schema";
     import {
         dateProxy,
         superForm,
         type SuperValidated
     } from "sveltekit-superforms";
-    import * as Form from "$lib/components/ui/form";
-    import * as Select from "$lib/components/ui/select";
-    import { Input } from "$lib/components/ui/input";
-    import { zod } from "sveltekit-superforms/adapters";
-    import {
-        updatePersonalInfoSchema,
-        type UpdatePersonalInfoSchema,
-        Gender
-    } from "$lib/schemas";
-    import { invalidFormMessage, showMessage } from "$lib/utils";
-    import { SheetClose } from "./ui/sheet";
 
     export let data: SuperValidated<UpdatePersonalInfoSchema>;
 

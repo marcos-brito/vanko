@@ -1,4 +1,4 @@
-import { signinSchema, signupSchema } from "$lib/schemas";
+import { signinSchema, signupSchema } from "$lib/auth/schema";
 import { zod } from "sveltekit-superforms/adapters";
 import type { LayoutServerLoad } from "./$types";
 import { superValidate } from "sveltekit-superforms";

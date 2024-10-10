@@ -1,20 +1,26 @@
+import { error, redirect, type Actions } from "@sveltejs/kit";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import type { PageServerLoad } from "./$types";
+import { findUserProfile } from "$lib/account/model";
+import { verifyUserPassword } from "$lib/auth/model";
+import {
+    actionError,
+    actionSuccess,
+    invalidFormMessage,
+    genericError
+} from "$lib/error";
 import {
     changePasswordSchema,
     Gender,
     updatePersonalInfoSchema
-} from "$lib/schemas";
-import { error, redirect, type Actions } from "@sveltejs/kit";
-import { message, superValidate } from "sveltekit-superforms";
-import { zod } from "sveltekit-superforms/adapters";
-import type { PageServerLoad } from "./$types";
-import { findUserProfile, verifyUserPassword } from "$lib/database/users";
-import { genericError, invalidFormMessage } from "$lib/utils";
+} from "$lib/account/schema";
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     const { user } = await safeGetSession();
     if (!user) redirect(401, "/");
 
-    const profile = await findUserProfile(user?.id);
+    const profile = await findUserProfile(user.id);
     if (!profile) {
         error(
             500,
@@ -57,9 +63,7 @@ export const actions: Actions = {
             zod(updatePersonalInfoSchema)
         );
 
-        if (!form.valid) {
-            return message(form, invalidFormMessage);
-        }
+        if (!form.valid) return actionError(form, invalidFormMessage);
 
         const { email, ...rest } = form.data;
         const { error } = await supabase.auth.updateUser({
@@ -67,51 +71,36 @@ export const actions: Actions = {
             data: { ...rest }
         });
 
-        if (error) {
-            return message(form, {
-                type: "error",
-                text: "Desculpe. Não conseguimos atualizar seus dados. Tente novamente mais tarde"
-            });
-        }
+        if (error)
+            return actionError(
+                form,
+                "Desculpe. Não conseguimos atualizar seus dados. Tente novamente mais tarde"
+            );
 
-        return message(form, {
-            type: "success",
-            text: "Dados alterados"
-        });
+        return actionSuccess(form, "Dados alterados");
     },
     changePassword: async ({
         request,
         locals: { safeGetSession, supabase }
     }) => {
         const form = await superValidate(request, zod(changePasswordSchema));
-        if (!form.valid) return message(form, invalidFormMessage);
+        if (!form.valid) return actionError(form, invalidFormMessage);
 
         const { user } = await safeGetSession();
-        if (!user) return message(form, genericError);
+        if (!user) return actionError(form, genericError);
 
         const passwordMatch = await verifyUserPassword(user.id, form.data.old);
-
-        if (!passwordMatch) {
-            return message(form, {
-                type: "error",
-                text: "A senha digitada é diferente da senha atual"
-            });
-        }
+        if (!passwordMatch)
+            return actionError(
+                form,
+                "A senha digitada é diferente da senha atual"
+            );
 
         const { error } = await supabase.auth.updateUser({
             password: form.data.new
         });
+        if (error) return actionError(form, genericError);
 
-        if (error) {
-            return message(form, {
-                type: "error",
-                text: "Algo não deu certo ao mudar sua senha. Tente novamente mais tarde."
-            });
-        }
-
-        return message(form, {
-            type: "success",
-            text: "Senha alterada"
-        });
+        return actionSuccess(form, "Senha alterada");
     }
 };

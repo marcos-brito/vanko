@@ -1,9 +1,9 @@
 <script lang="ts">
     import Button from "$lib/components/ui/button/button.svelte";
-    import * as Sheet from "$lib/components/ui/sheet/index";
+    import * as Sheet from "$lib/components/ui/sheet";
     import type { PageData } from "./$types";
-    import NewAddressForm from "$lib/components/address-form.svelte";
-    import AddressCard from "$lib/components/address-card.svelte";
+    import NewAddressForm from "$lib/address/components/address-form.svelte";
+    import AddressCard from "$lib/address/components/address-card.svelte";
 
     export let data: PageData;
 </script>

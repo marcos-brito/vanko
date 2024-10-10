@@ -4,11 +4,8 @@
     import { Input } from "$lib/components/ui/input";
     import { zod } from "sveltekit-superforms/adapters";
     import { invalidFormMessage, showMessage } from "$lib/utils";
-    import { SheetClose } from "./ui/sheet";
-    import {
-        changePasswordSchema,
-        type ChangePasswordSchema
-    } from "$lib/schemas";
+    import { SheetClose } from "$lib/components/ui/sheet";
+    import { changePasswordSchema, type ChangePasswordSchema } from "../schema";
 
     export let data: SuperValidated<ChangePasswordSchema>;
 

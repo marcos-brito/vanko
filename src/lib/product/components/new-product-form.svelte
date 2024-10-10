@@ -1,24 +1,19 @@
 <script lang="ts">
     import { Textarea } from "$lib/components/ui/textarea";
-    import {
-        dateProxy,
-        filesProxy,
-        superForm,
-        type SuperValidated
-    } from "sveltekit-superforms";
     import * as Form from "$lib/components/ui/form";
     import * as Select from "$lib/components/ui/select";
     import { Input } from "$lib/components/ui/input";
     import { zod } from "sveltekit-superforms/adapters";
     import { invalidFormMessage, showMessage } from "$lib/utils";
-    import { type NewProductSchema, newProductSchema } from "$lib/schemas";
+    import { type NewProductSchema, newProductSchema } from "../schema";
     import FormSection from "$lib/components/form-section.svelte";
+    import { Button } from "$lib/components/ui/button";
     import {
-        type Category,
-        type PricingGroup,
-        type Type
-    } from "$lib/database/schema";
-    import { Button } from "./ui/button";
+        filesProxy,
+        superForm,
+        type SuperValidated
+    } from "sveltekit-superforms";
+    import { type Category, type PricingGroup, type Type } from "../types";
 
     type Data = {
         form: SuperValidated<NewProductSchema>;

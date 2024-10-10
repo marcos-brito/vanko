@@ -7,14 +7,14 @@
     import { zod } from "sveltekit-superforms/adapters";
     import { invalidFormMessage, showMessage } from "$lib/utils";
     import cep from "cep-promise";
+    import { SheetClose } from "$lib/components/ui/sheet";
+    import { ResidenceType } from "../types";
     import {
         addressSchema,
-        ResidenceType,
         updateAddressSchema,
         type AddressSchema,
         type UpdateAddressSchema
-    } from "$lib/schemas";
-    import { SheetClose } from "./ui/sheet";
+    } from "../schema";
 
     export let data: SuperValidated<AddressSchema | UpdateAddressSchema>;
     export let isUpdateForm = false;

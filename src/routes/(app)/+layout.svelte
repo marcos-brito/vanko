@@ -2,8 +2,8 @@
     import { UserIcon, ShoppingCartIcon, SearchIcon } from "lucide-svelte";
     import type { LayoutData } from "./$types";
     import * as Tabs from "$lib/components/ui/tabs";
-    import SignupForm from "$lib/components/signup-form.svelte";
-    import SigninForm from "$lib/components/signin-form.svelte";
+    import SignupForm from "$lib/auth/components/signup-form.svelte";
+    import SigninForm from "$lib/auth/components/signin-form.svelte";
     import * as Sheet from "$lib/components/ui/sheet";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { showMessage } from "$lib/utils";

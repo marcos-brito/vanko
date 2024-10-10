@@ -1,16 +1,13 @@
 <script lang="ts">
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Sheet from "$lib/components/ui/sheet";
-    import {
-        deleteAddressSchema,
-        type UpdateAddressSchema
-    } from "$lib/schemas";
     import { superForm, type SuperValidated } from "sveltekit-superforms";
     import AddressForm from "./address-form.svelte";
     import * as Form from "$lib/components/ui/form";
     import { zod } from "sveltekit-superforms/adapters";
-    import { Input } from "./ui/input";
+    import { Input } from "$lib/components/ui/input";
     import { showMessage } from "$lib/utils";
+    import { deleteAddressSchema, type UpdateAddressSchema } from "../schema";
 
     export let address: UpdateAddressSchema;
     export let data: SuperValidated<UpdateAddressSchema>;
