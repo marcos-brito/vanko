@@ -1,8 +1,28 @@
-import type { NewProductSchema } from "$lib/schemas";
+import type { NewProductSchema } from "./schema";
 import { and, eq, inArray } from "drizzle-orm";
-import { db } from "$lib/database";
+import { db } from "$lib/db";
 import { categories, pricingGroups, products, types } from "$lib/schema";
 import { type Category, type PricingGroup, type Type } from "./types";
+import type { Product } from "$lib/shared/types";
+export async function findProduct(id: number): Promise<Product | undefined> {
+    const product = await db.query.products.findFirst({
+        where: eq(products.id, id),
+        with: {
+            pricing_group: true,
+            category: true,
+            type: true
+        }
+    });
+    if (!product) return undefined;
+
+    return {
+        ...product,
+        profit_margin: product.pricing_group.profit_margin,
+        category: product.category.name,
+        type: product.type.name
+    };
+}
+
 export async function insertProduct(product: NewProductSchema) {
     const type = await db.query.types.findFirst({
         where: eq(types.name, product.type)
