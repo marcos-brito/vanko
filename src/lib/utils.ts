@@ -28,6 +28,13 @@ export function showMessage(message: App.Superforms.Message) {
     }
 }
 
+export function calculateProductPrice(
+    cost: number,
+    profit_margin: number
+): number {
+    return cost + (cost / 100) * profit_margin;
+}
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }

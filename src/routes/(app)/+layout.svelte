@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { UserIcon, ShoppingCartIcon, SearchIcon } from "lucide-svelte";
+    import { UserIcon, SearchIcon } from "lucide-svelte";
     import type { LayoutData } from "./$types";
     import * as Tabs from "$lib/components/ui/tabs";
     import SignupForm from "$lib/auth/components/signup-form.svelte";
@@ -8,6 +8,7 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { showMessage } from "$lib/utils";
     import { goto } from "$app/navigation";
+    import CartSheet from "$lib/cart/components/cart-sheet.svelte";
     import { onMount, setContext } from "svelte";
     import { browser } from "$app/environment";
     import {
@@ -57,9 +58,7 @@
         </div>
         <div class="flex gap-5">
             <SearchIcon />
-            <a href="/cart">
-                <ShoppingCartIcon />
-            </a>
+            <CartSheet />
             {#if data.session}
                 <DropdownMenu.Root disableFocusFirstItem loop>
                     <DropdownMenu.Trigger>
