@@ -8,8 +8,24 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { showMessage } from "$lib/utils";
     import { goto } from "$app/navigation";
+    import { onMount, setContext } from "svelte";
+    import { browser } from "$app/environment";
+    import {
+        saveOnServer,
+        saveOnLocalStorage,
+        createCartStore,
+        readFromLocalStorege
+    } from "$lib/cart/store";
 
     export let data: LayoutData;
+    const cart = createCartStore();
+    data.cart ? cart.set(data.cart) : cart.set(readFromLocalStorege());
+    $: setContext("cart", cart);
+
+    onMount(() => {
+        if (data.session) saveOnServer(data.cart);
+        if (browser) saveOnLocalStorage(data.cart);
+    });
 
     async function signout(): Promise<void> {
         const { error } = await data.supabase.auth.signOut();
