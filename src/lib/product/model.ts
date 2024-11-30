@@ -24,30 +24,29 @@ export async function findProduct(id: number): Promise<Product | undefined> {
 }
 
 export async function insertProduct(product: NewProductSchema) {
-    const type = await db.query.types.findFirst({
-        where: eq(types.name, product.type)
-    });
-    if (!type) return undefined;
+    const results = await Promise.all([
+        db.query.types.findFirst({
+            where: eq(types.name, product.type)
+        }),
+        db.query.categories.findFirst({
+            where: eq(categories.name, product.category)
+        }),
+        db.query.pricingGroups.findFirst({
+            where: eq(pricingGroups.name, product.pricing_group)
+        })
+    ]);
+    if (results.some((result) => !result)) return undefined;
 
-    const category = await db.query.categories.findFirst({
-        where: eq(categories.name, product.category)
-    });
-    if (!category) return undefined;
-
-    const pricingGroup = await db.query.pricingGroups.findFirst({
-        where: eq(pricingGroups.name, product.pricing_group)
-    });
-    if (!pricingGroup) return undefined;
-
+    const [type, category, pricingGroup] = results;
     const { images, ...rest } = product;
     const [inserted] = await db
         .insert(products)
         .values({
             ...rest,
-            type: type.id,
+            type: type!.id,
             cost: product.cost.toString(),
-            category: category.id,
-            pricing_group: pricingGroup.id
+            category: category!.id,
+            pricing_group: pricingGroup!.id
         })
         .returning();
 
