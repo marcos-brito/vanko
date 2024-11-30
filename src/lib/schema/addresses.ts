@@ -26,7 +26,7 @@ export const addresses = pgTable("addresses", {
         .references(() => states.id)
         .notNull(),
     city: varchar("city", { length: 40 }).notNull(),
-    zip_code: char("zip_code", { length: 11 }).notNull(),
+    zip_code: char("zip_code", { length: 8 }).notNull(),
     neighborhood: varchar("neighborhood", { length: 50 }).notNull(),
     residence_type: residenceEnum("residence_type").notNull(),
     street: varchar("street", { length: 50 }).notNull(),
