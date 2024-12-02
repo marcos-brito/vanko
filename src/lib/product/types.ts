@@ -4,13 +4,15 @@ import type {
     newCategorySchema,
     newPricingGroup,
     newProductSchema,
-    newTypeSchema
+    newTypeSchema,
+    changeProductStatusSchema
 } from "./schema";
 
 export type PricingGroup = typeof pricingGroups.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Type = typeof types.$inferSelect;
 
+export type ChangeProductStatus = z.infer<typeof changeProductStatusSchema>;
 export type NewProductSchema = z.infer<typeof newProductSchema>;
 export type NewPricingGroup = z.infer<typeof newPricingGroup>;
 export type NewTypeSchema = z.infer<typeof newTypeSchema>;

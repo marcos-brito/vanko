@@ -6,10 +6,16 @@ import {
     serial,
     smallint,
     text,
-    varchar
+    varchar,
+    pgEnum
 } from "drizzle-orm/pg-core";
 import { statusEnum } from "./users";
 import { relations } from "drizzle-orm";
+
+export const statusChangeKind = pgEnum("status_change_kind", [
+    "activate",
+    "deactivate"
+]);
 
 export const products = pgTable("products", {
     id: serial("id").primaryKey(),
@@ -48,6 +54,15 @@ export const productsRelations = relations(products, ({ one }) => ({
         references: [pricingGroups.id]
     })
 }));
+
+export const statusChanges = pgTable("status_changes", {
+    id: serial("id").primaryKey(),
+    product: integer("product")
+        .references(() => products.id)
+        .notNull(),
+    reason: varchar("reason", { length: 200 }).notNull(),
+    kind: statusChangeKind("kind").notNull()
+});
 
 export const pricingGroups = pgTable("pricing_groups", {
     id: serial("id").primaryKey(),

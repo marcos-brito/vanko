@@ -16,6 +16,11 @@ export const newProductSchema = z.object({
     images: z.instanceof(File).array().min(1)
 });
 
+export const changeProductStatusSchema = z.object({
+    id: z.number(),
+    kind: z.enum(["deactivate", "activate"]),
+    reason: z.string().max(200)
+});
 
 export const newCategorySchema = z.object({
     name: z.string().length(50)
