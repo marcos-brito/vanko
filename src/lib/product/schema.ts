@@ -16,23 +16,16 @@ export const newProductSchema = z.object({
     images: z.instanceof(File).array().min(1)
 });
 
-export type NewProductSchema = z.infer<typeof newProductSchema>;
 
 export const newCategorySchema = z.object({
     name: z.string().length(50)
 });
 
-export type NewCategorySchema = z.infer<typeof newCategorySchema>;
-
 export const newTypeSchema = z.object({
     name: z.string().length(50)
 });
-
-export type NewTypeSchema = z.infer<typeof newTypeSchema>;
 
 export const newPricingGroup = z.object({
     name: z.string().length(50),
     profit_margin: z.number()
 });
-
-export type NewPricingGroup = z.infer<typeof newPricingGroup>;

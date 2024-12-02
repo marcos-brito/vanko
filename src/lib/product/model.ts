@@ -1,5 +1,5 @@
-import type { NewProductSchema } from "./schema";
 import { and, eq, inArray } from "drizzle-orm";
+import type { NewProductSchema } from "./types";
 import { db } from "$lib/db";
 import { categories, pricingGroups, products, types } from "$lib/schema";
 import { type Category, type PricingGroup, type Type } from "./types";

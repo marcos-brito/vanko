@@ -5,7 +5,7 @@
     import { Input } from "$lib/components/ui/input";
     import { zod } from "sveltekit-superforms/adapters";
     import { invalidFormMessage, showMessage } from "$lib/utils";
-    import { type NewProductSchema, newProductSchema } from "../schema";
+    import { newProductSchema } from "../schema";
     import FormSection from "$lib/components/form-section.svelte";
     import { Button } from "$lib/components/ui/button";
     import {
@@ -13,7 +13,12 @@
         superForm,
         type SuperValidated
     } from "sveltekit-superforms";
-    import { type Category, type PricingGroup, type Type } from "../types";
+    import {
+        type Category,
+        type NewProductSchema,
+        type PricingGroup,
+        type Type
+    } from "../types";
 
     type Data = {
         form: SuperValidated<NewProductSchema>;
