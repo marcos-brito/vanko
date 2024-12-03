@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
 };
 
 export const actions: Actions = {
-    newProduct: async ({ request, locals: { supabase } }) => {
+    newProduct: async ({ request }) => {
         const form = await superValidate(request, zod(newProductSchema));
         if (!form.valid) return actionError(form, invalidFormMessage);
 
@@ -40,19 +40,7 @@ export const actions: Actions = {
                 "Algo deu errado ao cadastrar o produto. Tente novamente mais tarde."
             );
 
-        for (let [idx, image] of form.data.images.entries()) {
-            const { error } = await supabase.storage
-                .from("products")
-                .upload(`${created.id}/${idx}`, image);
-
-            console.log(error);
-            if (error)
-                return actionError(
-                    form,
-                    "Ocorreu um erro fazendo upload das imagens. Tente novamente usando a página do produto."
-                );
-        }
-
+        await uploadProductImages(created.id, form.data.images);
         return actionSuccess(form, "Produto cadastrado.");
     },
     newCategory: async (req) => {

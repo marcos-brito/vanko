@@ -1,6 +1,6 @@
 import type { NewProductSchema } from "./types";
 import { and, eq, inArray, count } from "drizzle-orm";
-import { db } from "$lib/db";
+import { db, supabase } from "$lib/db";
 import {
     categories,
     pricingGroups,
@@ -45,6 +45,12 @@ export async function findProduct(id: number): Promise<Product | undefined> {
         category: product.category.name,
         type: product.type.name
     };
+}
+
+export async function uploadProductImages(id: number, images: Array<File>) {
+    images.forEach(async (image, idx) => {
+        await supabase.storage.from("products").upload(`${id}/${idx}`, image);
+    });
 }
 
 export async function deactivateProduct(id: number, reason: string) {
