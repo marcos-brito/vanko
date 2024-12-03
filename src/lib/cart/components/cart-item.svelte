@@ -3,7 +3,7 @@
     import { calculateProductPrice } from "$lib/utils";
     import CartItemActions from "./cart-item-actions.svelte";
 
-    export let product: Product;
+    export let product: Product & { images: Array<string> };
     export let quantity: number;
 
     const price = calculateProductPrice(
@@ -13,7 +13,11 @@
 </script>
 
 <article class="flex gap-4 items-center">
-    <img class="bg-gray-50 size-16" alt={`${product.name} image`} />
+    <img
+        src={product.images[0]}
+        class="aspect-square size-20"
+        alt={`${product.name} image`}
+    />
     <div class="flex flex-col justify-between">
         <p class="font-bold">{product.name}</p>
         <p class="text-sm opacity-70">

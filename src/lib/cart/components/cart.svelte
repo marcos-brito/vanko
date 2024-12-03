@@ -4,14 +4,16 @@
     import CartItem from "./cart-item.svelte";
 
     const cart: CartStore = getContext("cart");
-    export let products: Array<Product> = [];
+    export let products: Array<Product & { images: Array<string> }> = [];
     $: productsIds = Object.keys($cart);
 
     cart.subscribe((cart) => {
         products = products.filter((p) => Object.hasOwn(cart, p.id));
     });
 
-    async function fetchProduct(id: string): Promise<Product | null> {
+    async function fetchProduct(
+        id: string
+    ): Promise<(Product & { images: Array<string> }) | null> {
         const res = await fetch(`/api/products/${id}`);
         if (res.status == 400 || res.status == 404) {
             cart.removeAll(id);

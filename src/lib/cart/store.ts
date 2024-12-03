@@ -57,7 +57,7 @@ export function saveOnLocalStorage(cart: CartStore): void {
     });
 }
 
-export function readFromLocalStorege() {
+export function readFromLocalStorege(): Cart {
     if (!browser) return {};
     const cart = window.localStorage.getItem("cart") || "{}";
     return JSON.parse(cart);
