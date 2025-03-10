@@ -10,10 +10,23 @@ import {
     date,
     boolean
 } from "drizzle-orm/pg-core";
+import { enumToPgEnum } from "$lib/utils";
 
-export const genderEnum = pgEnum("gender", ["masculino", "feminino", "outro"]);
-export const statusEnum = pgEnum("status", ["ativo", "inativo"]);
+export enum Gender {
+    Male = "masculino",
+    Female = "feminino",
+    Other = "outro"
+}
 
+export enum Status {
+    Active = "ativo",
+    Inactive = "inativo",
+}
+
+export const genderEnum = pgEnum("gender", enumToPgEnum(Gender));
+export const statusEnum = pgEnum("status", enumToPgEnum(Status));
+
+export type SelectProfile = typeof profiles.$inferSelect
 export const profiles = pgTable("profiles", {
     id: uuid("id").primaryKey(),
     name: varchar("name", { length: 150 }),
@@ -23,7 +36,7 @@ export const profiles = pgTable("profiles", {
     gender: genderEnum("gender"),
     birth: date("birth"),
     is_admin: boolean("is_admin").default(false),
-    status: statusEnum("status"),
+    status: statusEnum("status").default(Status.Active),
     ranking: smallint("ranking").default(1)
 });
 

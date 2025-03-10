@@ -13,22 +13,27 @@ import {
     uuid,
     varchar
 } from "drizzle-orm/pg-core";
+import { enumToPgEnum } from "$lib/utils";
 
-export const orderStatus = pgEnum("order_status", [
-    "Em aberto",
-    "Aguardando pagamento",
-    "Pagamento aceito",
-    "Pagamento negado",
-    "Finalizado",
-    "Cancelado",
-    "Em tranporte",
-    "Entregue",
-    "Troca solicitada",
-    "Em troca",
-    "Troca recebida",
-    "Troca finalizada"
-]);
+export enum OrderStatus {
+    Open = "em aberto",
+    WaitingPayment = "aguardando pagamento",
+    PaymentAccepted = "pagamento aceito",
+    PaymentDeclined = "pagamento negado",
+    Finished = "finalizado",
+    Canceled = "cancelado",
+    Transporting = "em tranporte",
+    Delivered = "entregue",
+    ExchangeRequested = "troca solicitada",
+    ExchangeInProgress = "em troca",
+    ExchangeReceived = "troca recebida",
+    ExchangeFinished = "troca finalizada"
+}
 
+export const orderStatus = pgEnum("order_status", enumToPgEnum(OrderStatus));
+
+export type SelectOrder = typeof orders.$inferSelect;
+export type InsertOrder = typeof orders.$inferInsert;
 export const orders = pgTable("orders", {
     id: serial("id").primaryKey(),
     subtotal: numeric("subtotal", { precision: 5, scale: 2 }).notNull(),
@@ -48,14 +53,8 @@ export const orders = pgTable("orders", {
         .notNull()
 });
 
-export const ordersRelations = relations(orders, ({ one, many }) => ({
-    address: one(orderAddress, {
-        fields: [orders.address],
-        references: [orderAddress.id]
-    }),
-    products: many(orderProducts)
-}));
 
+export type SelectOrderProduct = typeof orderProducts.$inferSelect;
 export const orderProducts = pgTable("order_products", {
     id: serial("id").primaryKey(),
     cost: numeric("cost", { precision: 5, scale: 2 }).notNull(),
@@ -65,13 +64,7 @@ export const orderProducts = pgTable("order_products", {
         .notNull()
 });
 
-export const orderProductsRelations = relations(orderProducts, ({ one }) => ({
-    products: one(products, {
-        fields: [orderProducts.product],
-        references: [products.id]
-    })
-}));
-
+export type SelectOrderAddress = typeof orderAddress.$inferSelect;
 export const orderAddress = pgTable("order_address", {
     id: serial("id").primaryKey(),
     country: integer("country")
@@ -88,6 +81,21 @@ export const orderAddress = pgTable("order_address", {
     residence_type: residenceEnum("residence_type").notNull(),
     observations: varchar("observations", { length: 400 }).notNull()
 });
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+    address: one(orderAddress, {
+        fields: [orders.address],
+        references: [orderAddress.id]
+    }),
+    products: many(orderProducts)
+}));
+
+export const orderProductsRelations = relations(orderProducts, ({ one }) => ({
+    products: one(products, {
+        fields: [orderProducts.product],
+        references: [products.id]
+    })
+}));
 
 export const orderAddressRelations = relations(orderAddress, ({ one }) => ({
     country: one(countries, {

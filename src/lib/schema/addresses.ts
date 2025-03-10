@@ -10,9 +10,17 @@ import {
     integer,
     pgEnum
 } from "drizzle-orm/pg-core";
+import { enumToPgEnum } from "$lib/utils";
 
-export const residenceEnum = pgEnum("residence", ["casa", "apartamento"]);
+export enum ResidenceKind {
+    House = "casa",
+        Apartment = "apartamento",
+}
 
+export const residenceEnum = pgEnum("residence", enumToPgEnum(ResidenceKind));
+
+export type SelectAddress = typeof addresses.$inferSelect;
+export type InsertAdress = typeof addresses.$inferInsert;
 export const addresses = pgTable("addresses", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
@@ -34,8 +42,17 @@ export const addresses = pgTable("addresses", {
     observations: varchar("observations", { length: 400 }).notNull()
 });
 
-export type Address = typeof addresses.$inferSelect;
-export type NewAddress = typeof addresses.$inferInsert;
+export type Country = typeof countries.$inferSelect;
+export const countries = pgTable("countries", {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 56 }).notNull().unique()
+});
+
+export type State = typeof states.$inferSelect;
+export const states = pgTable("states", {
+    id: serial("id").primaryKey(),
+    name: char("name", { length: 2 }).notNull().unique()
+});
 
 export const addressesRelations = relations(addresses, ({ one }) => ({
     country: one(countries, {
@@ -47,17 +64,3 @@ export const addressesRelations = relations(addresses, ({ one }) => ({
         references: [states.id]
     })
 }));
-
-export const countries = pgTable("countries", {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 56 }).notNull().unique()
-});
-
-export type Country = typeof countries.$inferSelect;
-
-export const states = pgTable("states", {
-    id: serial("id").primaryKey(),
-    name: char("name", { length: 2 }).notNull().unique()
-});
-
-export type State = typeof states.$inferSelect;
