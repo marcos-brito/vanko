@@ -16,9 +16,14 @@
         type SuperValidated
     } from "sveltekit-superforms";
 
-    export let data: SuperValidated<UpdatePersonalInfoSchema>;
+    interface Props {
+        data: SuperValidated<UpdatePersonalInfoSchema>;
+        [key: string]: any
+    }
 
-    const form = superForm(data, {
+    let { ...props }: Props = $props();
+
+    const form = superForm(props.data, {
         validators: zod(updatePersonalInfoSchema),
         onUpdated({ form }) {
             if (form.message) {
@@ -37,70 +42,82 @@
         empty: "undefined"
     });
 
-    $: selectedGender = $formData.gender
+    let selectedGender = $derived($formData.gender
         ? {
               label: $formData.gender,
               value: $formData.gender
           }
-        : undefined;
+        : undefined);
 </script>
 
-<form method="POST" action="/account?/updateInfo" {...$$props} use:enhance>
+<form method="POST" action="/account?/updateInfo" {...props} use:enhance>
     <Form.Field {form} name="name">
-        <Form.Control let:attrs>
-            <Form.Label>Nome</Form.Label>
-            <Input {...attrs} bind:value={$formData.name} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Nome</Form.Label>
+                <Input {...attrs} bind:value={$formData.name} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="email">
-        <Form.Control let:attrs>
-            <Form.Label>Email</Form.Label>
-            <Input {...attrs} bind:value={$formData.email} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Email</Form.Label>
+                <Input {...attrs} bind:value={$formData.email} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="phone">
-        <Form.Control let:attrs>
-            <Form.Label>Telefone</Form.Label>
-            <Input {...attrs} bind:value={$formData.phone} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Telefone</Form.Label>
+                <Input {...attrs} bind:value={$formData.phone} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="cpf">
-        <Form.Control let:attrs>
-            <Form.Label>CPF</Form.Label>
-            <Input {...attrs} bind:value={$formData.cpf} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>CPF</Form.Label>
+                <Input {...attrs} bind:value={$formData.cpf} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="birth">
-        <Form.Control let:attrs>
-            <Form.Label>Data de nascimento</Form.Label>
-            <Input type="date" {...attrs} bind:value={$proxyDate} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Data de nascimento</Form.Label>
+                <Input type="date" {...attrs} bind:value={$proxyDate} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="gender">
-        <Form.Control let:attrs>
-            <Form.Label>Gênero</Form.Label>
-            <Select.Root
-                selected={selectedGender}
-                onSelectedChange={(v) => {
-                    v && ($formData.gender = v.value);
-                }}
-            >
-                <Select.Trigger {...attrs}>
-                    <Select.Value placeholder="Gênero" />
-                </Select.Trigger>
-                <Select.Content>
-                    <Select.Item value={Gender.MALE} label="Masculino" />
-                    <Select.Item value={Gender.FEMALE} label="Feminino" />
-                    <Select.Item value={Gender.OTHER} label="Outro" />
-                </Select.Content>
-            </Select.Root>
-            <input hidden bind:value={$formData.gender} name={attrs.name} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Gênero</Form.Label>
+                <Select.Root
+                    selected={selectedGender}
+                    onSelectedChange={(v) => {
+                        v && ($formData.gender = v.value);
+                    }}
+                >
+                    <Select.Trigger {...attrs}>
+                        <Select.Value placeholder="Gênero" />
+                    </Select.Trigger>
+                    <Select.Content>
+                        <Select.Item value={Gender.MALE} label="Masculino" />
+                        <Select.Item value={Gender.FEMALE} label="Feminino" />
+                        <Select.Item value={Gender.OTHER} label="Outro" />
+                    </Select.Content>
+                </Select.Root>
+                <input hidden bind:value={$formData.gender} name={attrs.name} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <SheetClose>

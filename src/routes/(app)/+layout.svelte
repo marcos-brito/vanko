@@ -1,5 +1,7 @@
 <script lang="ts">
-    import { UserIcon, SearchIcon } from "lucide-svelte";
+    import { run } from 'svelte/legacy';
+
+    import { UserIcon, SearchIcon, MessageSquareIcon } from "lucide-svelte";
     import type { LayoutData } from "./$types";
     import * as Tabs from "$lib/components/ui/tabs";
     import SignupForm from "$lib/auth/components/signup-form.svelte";
@@ -17,15 +19,23 @@
         createCartStore,
         readFromLocalStorege
     } from "$lib/cart/store";
+    import { Button } from "$lib/components/ui/button";
 
-    export let data: LayoutData;
+    interface Props {
+        data: LayoutData;
+        children?: import('svelte').Snippet;
+    }
+
+    let { data, children }: Props = $props();
     const cart = createCartStore();
     data.cart ? cart.set(data.cart) : cart.set(readFromLocalStorege());
-    $: setContext("cart", cart);
+    run(() => {
+        setContext("cart", cart);
+    });
 
     onMount(() => {
-        if (data.session) saveOnServer(data.cart);
-        if (browser) saveOnLocalStorage(data.cart);
+        if (data.session) saveOnServer(cart);
+        if (browser) saveOnLocalStorage(cart);
     });
 
     async function signout(): Promise<void> {
@@ -49,6 +59,15 @@
     }
 </script>
 
+<Button
+    on:click={() => {}}
+    variant="outline"
+    size="icon"
+    class="absolute right-8 bottom-8"
+>
+    <MessageSquareIcon />
+    <span class="sr-only">Abrir chat</span>
+</Button>
 <div class="p-8">
     <nav class="flex gap-16 justify-end items-center mb-16">
         <h1 class="text-3xl font-semibold flex-grow">vanko</h1>
@@ -76,6 +95,9 @@
                             <DropdownMenu.Item
                                 ><a href="/addresses">Endereços</a
                                 ></DropdownMenu.Item
+                            >
+                            <DropdownMenu.Item
+                                ><a href="/cards">Cartões</a></DropdownMenu.Item
                             >
                             <DropdownMenu.Item on:click={signout}
                                 >Sair</DropdownMenu.Item
@@ -124,5 +146,5 @@
             {/if}
         </div>
     </nav>
-    <slot />
+    {@render children?.()}
 </div>

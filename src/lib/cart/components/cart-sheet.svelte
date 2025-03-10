@@ -9,16 +9,20 @@
 
     import { Separator } from "$lib/components/ui/separator";
 
-    export let products: Array<Product> = [];
+    interface Props {
+        products?: Array<Product>;
+    }
+
+    let { products = $bindable([]) }: Props = $props();
     const cart: CartStore = getContext("cart");
 
-    $: subTotal = products
+    let subTotal = $derived(products
         .map(
             (p) =>
                 calculateProductPrice(Number(p.cost), p.profit_margin) *
                 $cart[p.id]
         )
-        .reduce((acc, p) => acc + p, 0);
+        .reduce((acc, p) => acc + p, 0));
 </script>
 
 <Sheet.Root>

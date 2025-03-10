@@ -7,9 +7,14 @@
     import { SheetClose } from "$lib/components/ui/sheet";
     import { changePasswordSchema, type ChangePasswordSchema } from "../schema";
 
-    export let data: SuperValidated<ChangePasswordSchema>;
+    interface Props {
+        data: SuperValidated<ChangePasswordSchema>;
+        [key: string]: any
+    }
 
-    const form = superForm(data, {
+    let { ...props }: Props = $props();
+
+    const form = superForm(props.data, {
         validators: zod(changePasswordSchema),
         onUpdated({ form }) {
             if (form.message) {
@@ -25,26 +30,32 @@
     const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" action="/account?/changePassword" {...$$props} use:enhance>
+<form method="POST" action="/account?/changePassword" {...props} use:enhance>
     <Form.Field {form} name="old">
-        <Form.Control let:attrs>
-            <Form.Label>Senha atual</Form.Label>
-            <Input {...attrs} type="password" bind:value={$formData.old} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Senha atual</Form.Label>
+                <Input {...attrs} type="password" bind:value={$formData.old} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="new">
-        <Form.Control let:attrs>
-            <Form.Label>Nova senha</Form.Label>
-            <Input {...attrs} type="password" bind:value={$formData.new} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Nova senha</Form.Label>
+                <Input {...attrs} type="password" bind:value={$formData.new} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="confirm">
-        <Form.Control let:attrs>
-            <Form.Label>Confirme sua nova senha</Form.Label>
-            <Input {...attrs} type="password" bind:value={$formData.confirm} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Confirme sua nova senha</Form.Label>
+                <Input {...attrs} type="password" bind:value={$formData.confirm} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <SheetClose>

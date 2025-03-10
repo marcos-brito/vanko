@@ -5,7 +5,7 @@ import { zod } from "sveltekit-superforms/adapters";
 import { invalidFormMessage, actionError, actionSuccess } from "$lib/error";
 import {
     newCategorySchema,
-    newPricingGroup,
+    newPricingGroupSchema,
     newProductSchema,
     newTypeSchema
 } from "$lib/product/schema";
@@ -13,7 +13,11 @@ import {
     findCategories,
     findPricingGroups,
     findTypes,
-    insertProduct
+    insertCategory,
+    insertPricingGroup,
+    insertProduct,
+    insertType,
+    uploadProductImages
 } from "$lib/product/model";
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
@@ -46,13 +50,44 @@ export const actions: Actions = {
     newCategory: async (req) => {
         const form = await superValidate(req, zod(newCategorySchema));
         if (!form.valid) return actionError(form, invalidFormMessage);
+
+        const created = await insertCategory(form.data.name);
+        if (!created)
+            return actionError(
+                form,
+                "Algo deu errado ao cadastrar a categoria. Tente novamente mais tarde."
+            );
+
+        return actionSuccess(form, "Categoria cadastrada");
     },
     newType: async (req) => {
         const form = await superValidate(req, zod(newTypeSchema));
         if (!form.valid) return actionError(form, invalidFormMessage);
+
+        const created = await insertType(form.data.name);
+        if (!created)
+            return actionError(
+                form,
+                "Algo deu errado ao cadastrar o tipo. Tente novamente mais tarde."
+            );
+
+        return actionSuccess(form, "Tipo cadastrado");
     },
     newPricingGroup: async (req) => {
-        const form = await superValidate(req, zod(newPricingGroup));
+        const form = await superValidate(req, zod(newPricingGroupSchema));
         if (!form.valid) return actionError(form, invalidFormMessage);
+
+        const created = await insertPricingGroup(
+            form.data.name,
+            form.data.profit_margin
+        );
+
+        if (!created)
+            return actionError(
+                form,
+                "Algo deu errado ao cadastrar o grupo de precificação. Tente novamente mais tarde."
+            );
+
+        return actionSuccess(form, "Grupo de precificação cadastrado");
     }
 };

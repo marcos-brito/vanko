@@ -8,9 +8,14 @@
     import { Input } from "$lib/components/ui/input";
     import { showMessage } from "$lib/utils";
     import { deleteAddressSchema, type UpdateAddressSchema } from "../schema";
+    import type { Address } from "$lib/shared/types";
 
-    export let address: UpdateAddressSchema;
-    export let data: SuperValidated<UpdateAddressSchema>;
+    interface Props {
+        address: Address;
+        data: SuperValidated<UpdateAddressSchema>;
+    }
+
+    let { address, data }: Props = $props();
 
     const form = superForm(data, {
         validators: zod(deleteAddressSchema),
@@ -57,9 +62,11 @@
             </Sheet.Root>
             <form method="POST" action="/addresses?/del" use:enhance>
                 <Form.Field {form} name="id">
-                    <Form.Control let:attrs>
-                        <Input class="hidden" {...attrs} value={$formData.id} />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Input class="hidden" {...attrs} value={$formData.id} />
+                                                                    {/snippet}
+                                        </Form.Control>
                 </Form.Field>
                 <Form.Button class="font-bold" variant="link"
                     >Excluir</Form.Button

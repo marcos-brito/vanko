@@ -3,8 +3,12 @@
     import { calculateProductPrice } from "$lib/utils";
     import CartItemActions from "./cart-item-actions.svelte";
 
-    export let product: Product & { images: Array<string> };
-    export let quantity: number;
+    interface Props {
+        product: Product & { images: Array<string> };
+        quantity: number;
+    }
+
+    let { product, quantity }: Props = $props();
 
     const price = calculateProductPrice(
         Number(product.cost),

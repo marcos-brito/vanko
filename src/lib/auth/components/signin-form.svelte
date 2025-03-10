@@ -6,9 +6,14 @@
     import { zod } from "sveltekit-superforms/adapters";
     import { invalidFormMessage, showMessage } from "$lib/utils";
 
-    export let data: SuperValidated<SigninSchema>;
+    interface Props {
+        data: SuperValidated<SigninSchema>;
+        [key: string]: any
+    }
 
-    const form = superForm(data, {
+    let { ...props }: Props = $props();
+
+    const form = superForm(props.data, {
         validators: zod(signinSchema),
         onUpdated({ form }) {
             if (form.message) {
@@ -24,19 +29,23 @@
     const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" action="?/signin" {...$$props} use:enhance>
+<form method="POST" action="?/signin" {...props} use:enhance>
     <Form.Field {form} name="email">
-        <Form.Control let:attrs>
-            <Form.Label>Email</Form.Label>
-            <Input {...attrs} bind:value={$formData.email} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Email</Form.Label>
+                <Input {...attrs} bind:value={$formData.email} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="password">
-        <Form.Control let:attrs>
-            <Form.Label>Senha</Form.Label>
-            <Input type="password" {...attrs} bind:value={$formData.password} />
-        </Form.Control>
+        <Form.Control >
+            {#snippet children({ attrs })}
+                        <Form.Label>Senha</Form.Label>
+                <Input type="password" {...attrs} bind:value={$formData.password} />
+                                {/snippet}
+                </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Button class="col-span-2">Continuar</Form.Button>

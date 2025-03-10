@@ -6,7 +6,11 @@
     import DataField from "$lib/components/data-field.svelte";
     import ChangePasswordForm from "$lib/account/components/change-password-form.svelte";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 </script>
 
 <main class="flex flex-col gap-16">

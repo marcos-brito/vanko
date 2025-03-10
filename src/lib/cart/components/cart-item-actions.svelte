@@ -5,8 +5,12 @@
     import type { CartStore, Product } from "$lib/shared/types";
 
     const cart: CartStore = getContext("cart");
-    export let product: Product;
-    export let quantity: number;
+    interface Props {
+        product: Product;
+        quantity: number;
+    }
+
+    let { product, quantity }: Props = $props();
 </script>
 
 <Button

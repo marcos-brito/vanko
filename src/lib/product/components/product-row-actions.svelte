@@ -7,7 +7,11 @@
     import type { Product } from "$lib/shared/types";
     import ProductStatusForm from "./product-status-form.svelte";
 
-    export let product: Product;
+    interface Props {
+        product: Product;
+    }
+
+    let { product }: Props = $props();
 </script>
 
 <Sheet.Root>
@@ -21,17 +25,19 @@
         />
     </Sheet.Content>
     <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild let:builder>
-            <Button
-                variant="ghost"
-                builders={[builder]}
-                size="icon"
-                class="relative h-8 w-8 p-0"
-            >
-                <span class="sr-only">Open menu</span>
-                <Ellipsis class="h-4 w-4" />
-            </Button>
-        </DropdownMenu.Trigger>
+        <DropdownMenu.Trigger asChild >
+            {#snippet children({ builder })}
+                        <Button
+                    variant="ghost"
+                    builders={[builder]}
+                    size="icon"
+                    class="relative h-8 w-8 p-0"
+                >
+                    <span class="sr-only">Open menu</span>
+                    <Ellipsis class="h-4 w-4" />
+                </Button>
+                                {/snippet}
+                </DropdownMenu.Trigger>
         <DropdownMenu.Content>
             <DropdownMenu.Group>
                 <DropdownMenu.Item>

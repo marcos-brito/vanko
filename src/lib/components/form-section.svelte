@@ -1,8 +1,13 @@
 <script lang="ts">
-    export let name: string;
+    interface Props {
+        name: string;
+        children?: import('svelte').Snippet;
+    }
+
+    let { name, children }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-3">
     <p class="text-xl">{name}</p>
-    <slot />
+    {@render children?.()}
 </div>

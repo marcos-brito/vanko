@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import { Button } from "$lib/components/ui/button";
     import { ColumnsIcon, PlusIcon } from "lucide-svelte";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
@@ -6,9 +8,13 @@
     import type { FlatColumn } from "svelte-headless-table";
     import type { Product } from "$lib/shared/types";
 
-    export let filterValue = "";
-    export let hiddenColumnsIds: Array<String> = [];
-    export let flatColumns: Array<FlatColumn<Product>>;
+    interface Props {
+        filterValue?: string;
+        hiddenColumnsIds?: Array<String>;
+        flatColumns: Array<FlatColumn<Product>>;
+    }
+
+    let { filterValue = $bindable(""), hiddenColumnsIds = $bindable([]), flatColumns }: Props = $props();
 
     const ids = flatColumns.map((col) => col.id);
     const hidableCols = [
@@ -19,13 +25,13 @@
         "number",
         "bar_code"
     ];
-    let hideForId = Object.fromEntries(ids.map((id) => [id, true]));
+    let hideForId = $state(Object.fromEntries(ids.map((id) => [id, true])));
 
-    $: {
+    run(() => {
         hiddenColumnsIds = Object.entries(hideForId)
             .filter(([, hide]) => !hide)
             .map(([id]) => id);
-    }
+    });
 </script>
 
 <header class="flex items-center justify-between">
@@ -37,12 +43,14 @@
             bind:value={filterValue}
         />
         <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="ghost" builders={[builder]}>
-                    <ColumnsIcon size="20" class="mr-3" />
-                    Colunas
-                </Button>
-            </DropdownMenu.Trigger>
+            <DropdownMenu.Trigger asChild >
+                {#snippet children({ builder })}
+                                <Button variant="ghost" builders={[builder]}>
+                        <ColumnsIcon size="20" class="mr-3" />
+                        Colunas
+                    </Button>
+                                            {/snippet}
+                        </DropdownMenu.Trigger>
             <DropdownMenu.Content>
                 {#each flatColumns as col}
                     {#if hidableCols.includes(col.id)}

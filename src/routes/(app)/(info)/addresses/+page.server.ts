@@ -23,7 +23,7 @@ import {
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     const { user } = await safeGetSession();
-    if (!user) return redirect(404, "/");
+    if (!user) return error(401);
 
     const addresses = await findUserAddresses(user.id);
     if (!addresses)

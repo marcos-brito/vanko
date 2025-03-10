@@ -7,7 +7,9 @@
     import { invalidFormMessage, showMessage } from "$lib/utils";
     import { newProductSchema } from "../schema";
     import FormSection from "$lib/components/form-section.svelte";
-    import { Button } from "$lib/components/ui/button";
+    import CategorySheet from "./category-sheet.svelte";
+    import TypeSheet from "./type-sheet.svelte";
+    import PricingGroupSheet from "./pricing-group-sheet.svelte";
     import {
         filesProxy,
         superForm,
@@ -27,9 +29,14 @@
         pricing_groups: Array<PricingGroup>;
     };
 
-    export let data: Data;
+    interface Props {
+        data: Data;
+        [key: string]: any
+    }
 
-    const form = superForm(data.form, {
+    let { ...props }: Props = $props();
+
+    const form = superForm(props.data.form, {
         validators: zod(newProductSchema),
         onUpdated({ form }) {
             if (form.message) {
@@ -46,245 +53,267 @@
 
     const files = filesProxy(form, "images");
 
-    $: selectedCategory = $formData.category
+    let selectedCategory = $derived($formData.category
         ? {
               label: $formData.category,
               value: $formData.category
           }
-        : undefined;
+        : undefined);
 
-    $: pricingGroup = $formData.pricing_group
+    let pricingGroup = $derived($formData.pricing_group
         ? {
               label: $formData.pricing_group,
               value: $formData.pricing_group
           }
-        : undefined;
+        : undefined);
 
-    $: selectedType = $formData.type
+    let selectedType = $derived($formData.type
         ? {
               label: $formData.type,
               value: $formData.type
           }
-        : undefined;
+        : undefined);
 </script>
 
 <form
     method="POST"
     action="/dashboard/products/new?/newProduct"
     enctype="multipart/form-data"
-    {...$$props}
+    {...props}
     use:enhance
     class="gap-8 grid-cols-2 lg:grid"
 >
     <article class="flex flex-col gap-4">
         <FormSection name="Descrição">
             <Form.Field {form} name="name">
-                <Form.Control let:attrs>
-                    <Form.Label>Nome do produto</Form.Label>
-                    <Input {...attrs} bind:value={$formData.name} />
-                </Form.Control>
+                <Form.Control >
+                    {#snippet children({ attrs })}
+                                        <Form.Label>Nome do produto</Form.Label>
+                        <Input {...attrs} bind:value={$formData.name} />
+                                                        {/snippet}
+                                </Form.Control>
                 <Form.FieldErrors />
             </Form.Field>
             <Form.Field {form} name="description">
-                <Form.Control let:attrs>
-                    <Form.Label>Descrição do produto</Form.Label>
-                    <Textarea
-                        {...attrs}
-                        class="resize-y"
-                        bind:value={$formData.description}
-                    />
-                </Form.Control>
+                <Form.Control >
+                    {#snippet children({ attrs })}
+                                        <Form.Label>Descrição do produto</Form.Label>
+                        <Textarea
+                            {...attrs}
+                            class="resize-y"
+                            bind:value={$formData.description}
+                        />
+                                                        {/snippet}
+                                </Form.Control>
                 <Form.FieldErrors />
             </Form.Field>
         </FormSection>
+
         <FormSection name="Detalhes">
             <div class="grid gap-3 grid-cols-3">
                 <Form.Field {form} name="year">
-                    <Form.Control let:attrs>
-                        <Form.Label>Ano</Form.Label>
-                        <Input
-                            type="number"
-                            {...attrs}
-                            bind:value={$formData.year}
-                        />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Ano</Form.Label>
+                            <Input
+                                type="number"
+                                {...attrs}
+                                bind:value={$formData.year}
+                            />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="number">
-                    <Form.Control let:attrs>
-                        <Form.Label>Número</Form.Label>
-                        <Input
-                            {...attrs}
-                            type="number"
-                            bind:value={$formData.number}
-                        />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Número</Form.Label>
+                            <Input
+                                {...attrs}
+                                type="number"
+                                bind:value={$formData.number}
+                            />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="bar_code">
-                    <Form.Control let:attrs>
-                        <Form.Label>Código de barras</Form.Label>
-                        <Input
-                            {...attrs}
-                            type="number"
-                            bind:value={$formData.bar_code}
-                        />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Código de barras</Form.Label>
+                            <Input
+                                {...attrs}
+                                type="number"
+                                bind:value={$formData.bar_code}
+                            />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
             </div>
         </FormSection>
+
         <FormSection name="Categoria e tipo">
             <div class="grid gap-3 grid-cols-2">
                 <Form.Field {form} name="category">
-                    <Form.Control let:attrs>
-                        <Form.Label>Categoria</Form.Label>
-                        <Select.Root
-                            selected={selectedCategory}
-                            onSelectedChange={(v) => {
-                                v && ($formData.category = v.value);
-                            }}
-                        >
-                            <Select.Trigger {...attrs}>
-                                <Select.Value
-                                    placeholder={data.categories.length > 0
-                                        ? "Categoria"
-                                        : "Nenhuma cadastrada"}
-                                />
-                            </Select.Trigger>
-                            <Select.Content>
-                                {#each data.categories as category}
-                                    <Select.Item
-                                        value={category.name}
-                                        label={category.name}
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Categoria</Form.Label>
+                            <Select.Root
+                                selected={selectedCategory}
+                                onSelectedChange={(v) => {
+                                    v && ($formData.category = v.value);
+                                }}
+                            >
+                                <Select.Trigger {...attrs}>
+                                    <Select.Value
+                                        placeholder={props.data.categories.length > 0
+                                            ? "Categoria"
+                                            : "Nenhuma cadastrada"}
                                     />
-                                {/each}
-                            </Select.Content>
-                        </Select.Root>
-                        <input
-                            hidden
-                            bind:value={$formData.category}
-                            name={attrs.name}
-                        />
-                        <Button variant="link" class="text-xs"
-                            >Adicionar categoria</Button
-                        >
-                    </Form.Control>
+                                </Select.Trigger>
+                                <Select.Content>
+                                    {#each props.data.categories as category}
+                                        <Select.Item
+                                            value={category.name}
+                                            label={category.name}
+                                        />
+                                    {/each}
+                                </Select.Content>
+                            </Select.Root>
+                            <input
+                                hidden
+                                bind:value={$formData.category}
+                                name={attrs.name}
+                            />
+                            <CategorySheet />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="type">
-                    <Form.Control let:attrs>
-                        <Form.Label>Tipo</Form.Label>
-                        <Select.Root
-                            selected={selectedType}
-                            onSelectedChange={(v) => {
-                                v && ($formData.type = v.value);
-                            }}
-                        >
-                            <Select.Trigger {...attrs}>
-                                <Select.Value
-                                    placeholder={data.types.length > 0
-                                        ? "Tipo"
-                                        : "Nenhum cadastrado"}
-                                />
-                            </Select.Trigger>
-                            <Select.Content>
-                                {#each data.types as type}
-                                    <Select.Item
-                                        value={type.name}
-                                        label={type.name}
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Tipo</Form.Label>
+                            <Select.Root
+                                selected={selectedType}
+                                onSelectedChange={(v) => {
+                                    v && ($formData.type = v.value);
+                                }}
+                            >
+                                <Select.Trigger {...attrs}>
+                                    <Select.Value
+                                        placeholder={props.data.types.length > 0
+                                            ? "Tipo"
+                                            : "Nenhum cadastrado"}
                                     />
-                                {/each}
-                            </Select.Content>
-                        </Select.Root>
-                        <input
-                            hidden
-                            bind:value={$formData.type}
-                            name={attrs.name}
-                        />
-                        <Button variant="link" class="text-xs"
-                            >Adicionar tipo</Button
-                        >
-                    </Form.Control>
+                                </Select.Trigger>
+                                <Select.Content>
+                                    {#each props.data.types as type}
+                                        <Select.Item
+                                            value={type.name}
+                                            label={type.name}
+                                        />
+                                    {/each}
+                                </Select.Content>
+                            </Select.Root>
+                            <input
+                                hidden
+                                bind:value={$formData.type}
+                                name={attrs.name}
+                            />
+                            <TypeSheet />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
             </div>
         </FormSection>
+
         <FormSection name="Precificação">
             <div class="grid gap-3 grid-cols-2">
                 <Form.Field {form} name="cost">
-                    <Form.Control let:attrs>
-                        <Form.Label>Custo</Form.Label>
-                        <Input {...attrs} bind:value={$formData.cost} />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Custo</Form.Label>
+                            <Input {...attrs} bind:value={$formData.cost} />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FormDescription>Custo em reais</Form.FormDescription>
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="pricing_group">
-                    <Form.Control let:attrs>
-                        <Form.Label>Grupo de precificação</Form.Label>
-                        <Select.Root
-                            selected={pricingGroup}
-                            onSelectedChange={(v) => {
-                                v && ($formData.pricing_group = v.value);
-                            }}
-                        >
-                            <Select.Trigger {...attrs}>
-                                <Select.Value
-                                    placeholder={data.pricing_groups.length > 0
-                                        ? "Grupo"
-                                        : "Nenhum cadastrado"}
-                                />
-                            </Select.Trigger>
-                            <Select.Content>
-                                {#each data.pricing_groups as group}
-                                    <Select.Item
-                                        value={group.name}
-                                        label={`${group.name} ${group.profit_margin}`}
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Grupo de precificação</Form.Label>
+                            <Select.Root
+                                selected={pricingGroup}
+                                onSelectedChange={(v) => {
+                                    v && ($formData.pricing_group = v.value);
+                                }}
+                            >
+                                <Select.Trigger {...attrs}>
+                                    <Select.Value
+                                        placeholder={props.data.pricing_groups.length > 0
+                                            ? "Grupo"
+                                            : "Nenhum cadastrado"}
                                     />
-                                {/each}
-                            </Select.Content>
-                        </Select.Root>
-                        <input
-                            hidden
-                            bind:value={$formData.pricing_group}
-                            name={attrs.name}
-                        />
-                        <Button variant="link" class="text-xs"
-                            >Adicionar grupo</Button
-                        >
-                    </Form.Control>
+                                </Select.Trigger>
+                                <Select.Content>
+                                    {#each props.data.pricing_groups as group}
+                                        <Select.Item
+                                            value={group.name}
+                                            label={`${group.name} ${group.profit_margin}`}
+                                        />
+                                    {/each}
+                                </Select.Content>
+                            </Select.Root>
+                            <input
+                                hidden
+                                bind:value={$formData.pricing_group}
+                                name={attrs.name}
+                            />
+                            <PricingGroupSheet />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FieldErrors />
                 </Form.Field>
             </div>
         </FormSection>
     </article>
+
     <article class="flex flex-col gap-4">
         <FormSection name="Dimensões">
             <div class="grid gap-3 grid-cols-3">
                 <Form.Field {form} name="weight">
-                    <Form.Control let:attrs>
-                        <Form.Label>Peso</Form.Label>
-                        <Input {...attrs} bind:value={$formData.weight} />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Peso</Form.Label>
+                            <Input {...attrs} bind:value={$formData.weight} />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FormDescription>Peso em gramas</Form.FormDescription>
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="height">
-                    <Form.Control let:attrs>
-                        <Form.Label>Altura</Form.Label>
-                        <Input {...attrs} bind:value={$formData.height} />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Altura</Form.Label>
+                            <Input {...attrs} bind:value={$formData.height} />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FormDescription
                         >Altura em centímetros</Form.FormDescription
                     >
                     <Form.FieldErrors />
                 </Form.Field>
                 <Form.Field {form} name="width">
-                    <Form.Control let:attrs>
-                        <Form.Label>Largura</Form.Label>
-                        <Input {...attrs} bind:value={$formData.width} />
-                    </Form.Control>
+                    <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Form.Label>Largura</Form.Label>
+                            <Input {...attrs} bind:value={$formData.width} />
+                                                                    {/snippet}
+                                        </Form.Control>
                     <Form.FormDescription
                         >Largura em centímetros</Form.FormDescription
                     >
@@ -292,18 +321,21 @@
                 </Form.Field>
             </div>
         </FormSection>
+
         <FormSection name="Imagens">
             <Form.Field {form} name="images">
-                <Form.Control let:attrs>
-                    <Form.Label>Imagens</Form.Label>
-                    <Input
-                        {...attrs}
-                        type="file"
-                        multiple
-                        accept="image/png, image/jpeg"
-                        bind:value={$files}
-                    />
-                </Form.Control>
+                <Form.Control >
+                    {#snippet children({ attrs })}
+                                        <Form.Label>Imagens</Form.Label>
+                        <Input
+                            {...attrs}
+                            type="file"
+                            multiple
+                            accept="image/png, image/jpeg"
+                            bind:value={$files}
+                        />
+                                                        {/snippet}
+                                </Form.Control>
                 <Form.FieldErrors />
             </Form.Field>
         </FormSection>

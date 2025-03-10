@@ -1,6 +1,10 @@
 <script lang="ts">
-    export let label: string;
-    export let value: string | Date | undefined;
+    interface Props {
+        label: string;
+        value: string | Date | undefined;
+    }
+
+    let { label, value = $bindable() }: Props = $props();
 
     if (value instanceof Date) {
         const options = { year: "numeric", month: "numeric", day: "numeric" };

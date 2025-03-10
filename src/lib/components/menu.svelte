@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
     import type { ComponentType } from "svelte";
     import { Button } from "$lib/components/ui/button";
 
@@ -10,13 +10,17 @@
 </script>
 
 <script lang="ts">
-    export let routes: Array<Route>;
+    interface Props {
+        routes: Array<Route>;
+    }
+
+    let { routes }: Props = $props();
 </script>
 
 <aside class="flex flex-col gap-2 items-start justify-center">
     {#each routes as route}
         <Button variant="link" href={route.target} class="flex gap-2">
-            <svelte:component this={route.icon} size="16" />
+            <route.icon size="16" />
             <p class="text-sm">{route.alias}</p>
         </Button>
     {/each}

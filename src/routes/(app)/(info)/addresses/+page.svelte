@@ -5,7 +5,11 @@
     import NewAddressForm from "$lib/address/components/address-form.svelte";
     import AddressCard from "$lib/address/components/address-card.svelte";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 </script>
 
 <section class="flex flex-col gap-16">

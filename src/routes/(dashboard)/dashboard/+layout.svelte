@@ -2,6 +2,11 @@
     import DashboardSidebar from "$lib/components/dashboard-sidebar.svelte";
     import * as Sheet from "$lib/components/ui/sheet";
     import { MenuIcon } from "lucide-svelte";
+    interface Props {
+        children?: import('svelte').Snippet;
+    }
+
+    let { children }: Props = $props();
 </script>
 
 <section class="p-8 gap-12 flex flex-col lg:flex-row">
@@ -24,6 +29,6 @@
         </Sheet.Root>
     </nav>
     <main class="w-full">
-        <slot />
+        {@render children?.()}
     </main>
 </section>

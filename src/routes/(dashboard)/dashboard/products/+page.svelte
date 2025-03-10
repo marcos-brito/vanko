@@ -1,6 +1,13 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
-    import { ChevronDownIcon, ChevronUpIcon, PlusIcon } from "lucide-svelte";
+    import * as Pagination from "$lib/components/ui/pagination";
+    import {
+        ChevronDownIcon,
+        ChevronLeftIcon,
+        ChevronRightIcon,
+        ChevronUpIcon,
+        PlusIcon
+    } from "lucide-svelte";
     import type { PageData } from "./$types";
     import { readable } from "svelte/store";
     import {
@@ -20,7 +27,11 @@
     import ProductRowActions from "$lib/product/components/product-row-actions.svelte";
     import ProductTableActions from "$lib/product/components/product-table-actions.svelte";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 
     const table = createTable(readable(data.products), {
         page: addPagination(),
@@ -73,7 +84,8 @@
         flatColumns
     } = table.createViewModel(columns);
 
-    const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
+    const { hasNextPage, hasPreviousPage, pageIndex, pageCount, pageSize } =
+        pluginStates.page;
     const { filterValue } = pluginStates.filter;
     const { hiddenColumnIds } = pluginStates.hide;
 </script>
@@ -98,25 +110,27 @@
                         {#each headerRow.cells as cell (cell.id)}
                             <Subscribe
                                 attrs={cell.attrs()}
-                                let:attrs
+                                
                                 props={cell.props()}
-                                let:props
+                                
                             >
-                                <Table.Head {...attrs}>
-                                    <button
-                                        class="flex items-center gap-2 cursor-default"
-                                        on:click={props.sort.toggle}
-                                    >
-                                        <Render of={cell.render()} />
-                                        {#if props.sort.order == "asc"}
-                                            <ChevronUpIcon size="16" />
-                                        {/if}
-                                        {#if props.sort.order == "desc"}
-                                            <ChevronDownIcon size="16" />
-                                        {/if}
-                                    </button>
-                                </Table.Head>
-                            </Subscribe>
+                                {#snippet children({ attrs, props })}
+                                                                <Table.Head {...attrs}>
+                                        <button
+                                            class="flex items-center gap-2 cursor-default"
+                                            onclick={props.sort.toggle}
+                                        >
+                                            <Render of={cell.render()} />
+                                            {#if props.sort.order == "asc"}
+                                                <ChevronUpIcon size="16" />
+                                            {/if}
+                                            {#if props.sort.order == "desc"}
+                                                <ChevronDownIcon size="16" />
+                                            {/if}
+                                        </button>
+                                    </Table.Head>
+                                                                                            {/snippet}
+                                                        </Subscribe>
                         {/each}
                     </Table.Row>
                 </Subscribe>
@@ -124,32 +138,60 @@
         </Table.Header>
         <Table.Body {...$tableBodyAttrs}>
             {#each $pageRows as row (row.id)}
-                <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-                    <Table.Row {...rowAttrs}>
-                        {#each row.cells as cell (cell.id)}
-                            <Subscribe attrs={cell.attrs()} let:attrs>
-                                <Table.Cell {...attrs}>
-                                    <Render of={cell.render()} />
-                                </Table.Cell>
-                            </Subscribe>
-                        {/each}
-                    </Table.Row>
-                </Subscribe>
+                <Subscribe rowAttrs={row.attrs()} >
+                    {#snippet children({ rowAttrs })}
+                                        <Table.Row {...rowAttrs}>
+                            {#each row.cells as cell (cell.id)}
+                                <Subscribe attrs={cell.attrs()} >
+                                    {#snippet children({ attrs })}
+                                                                <Table.Cell {...attrs}>
+                                            <Render of={cell.render()} />
+                                        </Table.Cell>
+                                                                                                {/snippet}
+                                                        </Subscribe>
+                            {/each}
+                        </Table.Row>
+                                                        {/snippet}
+                                </Subscribe>
             {/each}
         </Table.Body>
     </Table.Root>
-    <div class="flex items-center justify-end space-x-4 py-4">
-        <Button
-            variant="outline"
-            size="sm"
-            on:click={() => ($pageIndex = $pageIndex - 1)}
-            disabled={!$hasPreviousPage}>Previous</Button
-        >
-        <Button
-            variant="outline"
-            size="sm"
-            disabled={!$hasNextPage}
-            on:click={() => ($pageIndex = $pageIndex + 1)}>Next</Button
-        >
-    </div>
+    <Pagination.Root
+        count={$pageCount}
+        perPage={$pageSize}
+        
+        
+    >
+        {#snippet children({ pages, currentPage })}
+                <Pagination.Content>
+                <Pagination.Item>
+                    <Pagination.PrevButton>
+                        <ChevronLeftIcon size="16" />
+                    </Pagination.PrevButton>
+                </Pagination.Item>
+                {#each pages as page (page.key)}
+                    {#if page.type === "ellipsis"}
+                        <Pagination.Item>
+                            <Pagination.Ellipsis />
+                        </Pagination.Item>
+                    {:else}
+                        <Pagination.Item>
+                            <Pagination.Link
+                                {page}
+                                on:click={() => ($pageIndex = page.value - 1)}
+                                isActive={currentPage == page.value}
+                            >
+                                {page.value}
+                            </Pagination.Link>
+                        </Pagination.Item>
+                    {/if}
+                {/each}
+                <Pagination.Item>
+                    <Pagination.NextButton>
+                        <ChevronRightIcon size="16" />
+                    </Pagination.NextButton>
+                </Pagination.Item>
+            </Pagination.Content>
+                    {/snippet}
+        </Pagination.Root>
 </main>

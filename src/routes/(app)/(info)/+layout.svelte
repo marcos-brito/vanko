@@ -1,6 +1,16 @@
 <script lang="ts">
     import Menu from "$lib/components/menu.svelte";
-    import { UserIcon, MapPinIcon, BoxIcon } from "lucide-svelte";
+    import {
+        UserIcon,
+        MapPinIcon,
+        BoxIcon,
+        CreditCardIcon
+    } from "lucide-svelte";
+    interface Props {
+        children?: import('svelte').Snippet;
+    }
+
+    let { children }: Props = $props();
 
     const routes = [
         {
@@ -17,6 +27,11 @@
             target: "/addresses",
             alias: "Endereços",
             icon: MapPinIcon
+        },
+        {
+            target: "/cards",
+            alias: "Cartões",
+            icon: CreditCardIcon
         }
     ];
 </script>
@@ -25,5 +40,5 @@
     <div>
         <Menu {routes} />
     </div>
-    <slot />
+    {@render children?.()}
 </section>
