@@ -2,15 +2,15 @@
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Sheet from "$lib/components/ui/sheet";
     import type { PageData } from "./$types";
-    import UpdatePersonalInfoForm from "$lib/account/components/update-personal-info-form.svelte";
     import DataField from "$lib/components/data-field.svelte";
-    import ChangePasswordForm from "$lib/account/components/change-password-form.svelte";
+    import FormUpdatePersonalInfo from "$lib/account/components/form-update-personal-info.svelte";
+    import FormChangePassword from "$lib/account/components/form-change-password.svelte";
 
-    interface Props {
+    let {
+        data
+    }: {
         data: PageData;
-    }
-
-    let { data }: Props = $props();
+    } = $props();
 </script>
 
 <main class="flex flex-col gap-16">
@@ -36,7 +36,7 @@
                         lembre-se de verificar sua caixa de entrada.
                     </Sheet.Description>
                 </Sheet.Header>
-                <UpdatePersonalInfoForm
+                <FormUpdatePersonalInfo
                     class="flex flex-col gap-2"
                     data={data.form.updateInfo}
                 />
@@ -57,7 +57,7 @@
                         lembre-se de verificar sua caixa de entrada.
                     </Sheet.Description>
                 </Sheet.Header>
-                <ChangePasswordForm
+                <FormChangePassword
                     class="flex flex-col gap-2"
                     data={data.form.changePassword}
                 />
