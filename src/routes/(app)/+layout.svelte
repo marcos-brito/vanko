@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { run } from 'svelte/legacy';
-
     import { UserIcon, SearchIcon, MessageSquareIcon } from "lucide-svelte";
     import type { LayoutData } from "./$types";
     import * as Tabs from "$lib/components/ui/tabs";
@@ -11,32 +9,18 @@
     import { showMessage } from "$lib/utils";
     import { goto } from "$app/navigation";
     import CartSheet from "$lib/cart/components/cart-sheet.svelte";
-    import { onMount, setContext } from "svelte";
-    import { browser } from "$app/environment";
+    import { Button } from "$lib/components/ui/button";
     import {
         saveOnServer,
         saveOnLocalStorage,
         createCartStore,
         readFromLocalStorege
     } from "$lib/cart/store";
-    import { Button } from "$lib/components/ui/button";
 
-    interface Props {
+    let { data, children }: {
         data: LayoutData;
-        children?: import('svelte').Snippet;
-    }
-
-    let { data, children }: Props = $props();
-    const cart = createCartStore();
-    data.cart ? cart.set(data.cart) : cart.set(readFromLocalStorege());
-    run(() => {
-        setContext("cart", cart);
-    });
-
-    onMount(() => {
-        if (data.session) saveOnServer(cart);
-        if (browser) saveOnLocalStorage(cart);
-    });
+        children?: Snippet;
+    } = $props();
 
     async function signout(): Promise<void> {
         const { error } = await data.supabase.auth.signOut();
