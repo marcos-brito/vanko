@@ -1,18 +1,20 @@
 <script lang="ts">
-    import Menu from "$lib/components/menu.svelte";
+    import { Button } from "$lib/components/ui/button";
+    import type { Snippet } from "svelte";
     import {
         UserIcon,
         MapPinIcon,
         BoxIcon,
         CreditCardIcon
-    } from "lucide-svelte";
-    interface Props {
-        children?: import('svelte').Snippet;
-    }
+    } from "@lucide/svelte";
 
-    let { children }: Props = $props();
+    let {
+        children
+    }: {
+        children?: Snippet;
+    } = $props();
 
-    const routes = [
+    const items = [
         {
             target: "/account",
             alias: "Conta",
@@ -37,8 +39,13 @@
 </script>
 
 <section class="flex flex-col gap-12 md:flex-row">
-    <div>
-        <Menu {routes} />
-    </div>
+    <aside class="flex flex-col items-start">
+        {#each items as route}
+            <Button variant="ghost">
+                <route.icon />
+                <a href={route.target}> {route.alias}</a>
+            </Button>
+        {/each}
+    </aside>
     {@render children?.()}
 </section>
