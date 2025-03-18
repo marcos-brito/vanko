@@ -36,6 +36,13 @@
       "when": 1733165339102,
       "tag": "0005_status change table",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1742059243278,
+      "tag": "0006_denomalize_address",
+      "breakpoints": true
     }
   ]
 }
