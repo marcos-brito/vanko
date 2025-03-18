@@ -50,6 +50,13 @@
       "when": 1742315351828,
       "tag": "0007_card_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1742321418853,
+      "tag": "0008_fix_cep_length",
+      "breakpoints": true
     }
   ]
 }
