@@ -43,6 +43,13 @@
       "when": 1742059243278,
       "tag": "0006_denomalize_address",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1742315351828,
+      "tag": "0007_card_schema",
+      "breakpoints": true
     }
   ]
 }
