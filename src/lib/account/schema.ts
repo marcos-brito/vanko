@@ -1,23 +1,18 @@
+import { Gender } from "$lib/models";
 import { z } from "zod";
 
-export enum Gender {
-    FEMALE = "feminino",
-    MALE = "masculino",
-    OTHER = "outro"
-}
-
-export const updatePersonalInfoSchema = z.object({
+export const updatePersonalInfo= z.object({
     name: z.string().max(150).min(1),
     email: z.string().email(),
     cpf: z.string().regex(/\d{11,}/),
     phone: z.string().regex(/\d{11,}/),
     gender: z.nativeEnum(Gender),
     birth: z.date().min(new Date("1900-01-01")).max(new Date())
-});
+}).partial();
 
-export type UpdatePersonalInfoSchema = z.infer<typeof updatePersonalInfoSchema>;
+export type UpdatePersonalInfoSchema = z.infer<typeof updatePersonalInfo>;
 
-export const changePasswordSchema = z
+export const changePassword= z
     .object({
         old: z.string().min(8),
         new: z.string().min(8),
@@ -28,4 +23,4 @@ export const changePasswordSchema = z
         path: ["confirm"]
     });
 
-export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
+export type ChangePasswordSchema = z.infer<typeof changePassword>;

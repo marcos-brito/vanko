@@ -3,18 +3,10 @@ import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad } from "./$types";
 import { findUserProfile } from "$lib/account/store";
-import { verifyUserPassword } from "$lib/auth/model";
+import { verifyUserPassword } from "$lib/auth/store";
 import { mapProfile } from "$lib/account/presenters";
-import {
-    changePassword,
-    updatePersonalInfo
-} from "$lib/account/schema";
-import {
-    err,
-    success,
-    errInvalid,
-    errGeneric
-} from "$lib/error";
+import { changePassword, updatePersonalInfo } from "$lib/account/schema";
+import { err, success, errInvalid, errGeneric } from "$lib/error";
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     const { user } = await safeGetSession();
@@ -41,10 +33,7 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
 
 export const actions: Actions = {
     update: async ({ request, locals: { supabase } }) => {
-        const form = await superValidate(
-            request,
-            zod(updatePersonalInfo)
-        );
+        const form = await superValidate(request, zod(updatePersonalInfo));
 
         if (!form.valid) return err(form, errInvalid);
 
@@ -74,14 +63,12 @@ export const actions: Actions = {
 
         const passwordMatch = await verifyUserPassword(user.id, form.data.old);
         if (!passwordMatch)
-            return err(
-                form,
-                "A senha digitada é diferente da senha atual"
-            );
+            return err(form, "A senha digitada é diferente da senha atual");
 
         const { error } = await supabase.auth.updateUser({
             password: form.data.new
         });
+
         if (error) return err(form, errGeneric);
 
         return success(form, "Senha alterada");
