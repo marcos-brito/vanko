@@ -11,14 +11,17 @@ import {
 } from "drizzle-orm/pg-core";
 import { Status, statusEnum } from "./users";
 import { relations } from "drizzle-orm";
-import { enumToPgEnum } from "$lib/utils";
+import { enumToPgEnum } from "../utils";
 
 export enum StatusChangeKind {
     Activation = "activation",
-    Deactivation = "deactivation",
+    Deactivation = "deactivation"
 }
 
-export const statusChangeKind = pgEnum("status_change_kind", enumToPgEnum(StatusChangeKind));
+export const statusChangeKind = pgEnum(
+    "status_change_kind",
+    enumToPgEnum(StatusChangeKind)
+);
 
 export type SelectProduct = typeof products.$inferSelect;
 export const products = pgTable("products", {
@@ -60,13 +63,11 @@ export const pricingGroups = pgTable("pricing_groups", {
     profit_margin: real("profit_margin").notNull()
 });
 
-
 export type SelectCategory = typeof categories.$inferSelect;
 export const categories = pgTable("categories", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
-
 
 export type SelectType = typeof types.$inferSelect;
 export const types = pgTable("types", {
@@ -88,4 +89,3 @@ export const productsRelations = relations(products, ({ one }) => ({
         references: [pricingGroups.id]
     })
 }));
-
