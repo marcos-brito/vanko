@@ -13,6 +13,3 @@ export const supabase = createClient(
     PUBLIC_SUPABASE_URL,
     SERVICE_SUPABASE_ANON_KEY
 );
-export const redis = await createRedisClient()
-    .on("error", (err) => console.log(err))
-    .connect();
