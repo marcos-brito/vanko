@@ -1,22 +1,23 @@
 import { z } from "zod";
-import { ResidenceType } from "./types";
+import { ResidenceKind } from "$lib/models";
 
-export const addressSchema = z.object({
+export const createAddressSchema = z.object({
     name: z.string().min(1).max(50),
-    country: z.string().max(56),
     city: z.string().max(40),
     state: z.string().length(2),
     zip_code: z.string().length(8),
     neighborhood: z.string().max(50),
     street: z.string().max(50),
     number: z.coerce.number().max(32767).min(-32767),
-    residence_type: z.nativeEnum(ResidenceType),
+    residence_type: z.nativeEnum(ResidenceKind),
     observations: z.string().max(400)
 });
 
-export type AddressSchema = z.infer<typeof addressSchema>;
+export type CreateAddressSchema = z.infer<typeof createAddressSchema>;
 
-export const updateAddressSchema = addressSchema.extend({ id: z.number() });
+export const updateAddressSchema = createAddressSchema
+    .partial()
+    .extend({ id: z.number() });
 export type UpdateAddressSchema = z.infer<typeof updateAddressSchema>;
 
 export const deleteAddressSchema = z.object({ id: z.number() });

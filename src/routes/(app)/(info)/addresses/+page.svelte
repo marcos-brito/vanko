@@ -5,15 +5,15 @@
     import NewAddressForm from "$lib/address/components/address-form.svelte";
     import AddressCard from "$lib/address/components/address-card.svelte";
 
-    interface Props {
+    let {
+        data
+    }: {
         data: PageData;
-    }
-
-    let { data }: Props = $props();
+    } = $props();
 </script>
 
 <section class="flex flex-col gap-16">
-    <h1>Endereços</h1>
+    <h1 class="text-2xl font-bold">Endereços</h1>
     {#if data.addresses.length < 1}
         <p>Nenhum endereço cadastrado</p>
     {/if}
@@ -37,11 +37,7 @@
                         Basta colocar seu CEP para preencher os outros campos.
                     </Sheet.Description>
                 </Sheet.Header>
-                <NewAddressForm
-                    action="/addresses?/new"
-                    class="flex flex-col gap-2"
-                    data={data.form.newAddress}
-                />
+                <NewAddressForm data={data.form.newAddress} />
             </Sheet.Content>
         </Sheet.Root>
     </div>

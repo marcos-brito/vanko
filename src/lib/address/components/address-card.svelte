@@ -6,25 +6,23 @@
     import * as Form from "$lib/components/ui/form";
     import { zod } from "sveltekit-superforms/adapters";
     import { Input } from "$lib/components/ui/input";
-    import { showMessage } from "$lib/utils";
     import { deleteAddressSchema, type UpdateAddressSchema } from "../schema";
-    import type { Address } from "$lib/shared/types";
+    import type { Address } from "../presenter";
+    import { maybeShowMessage } from "$lib/error";
 
-    interface Props {
+    let {
+        address,
+        data
+    }: {
         address: Address;
         data: SuperValidated<UpdateAddressSchema>;
-    }
-
-    let { address, data }: Props = $props();
+    } = $props();
 
     const form = superForm(data, {
         validators: zod(deleteAddressSchema),
-        onUpdated({ form }) {
-            if (form.message) {
-                showMessage(form.message);
-            }
-        }
+        onUpdate: ({ form }) => maybeShowMessage(form)
     });
+
     const { form: formData, enhance } = form;
 </script>
 
@@ -35,7 +33,7 @@
     </p>
     <article class="flex justify-between gap-8 items-center">
         <p class="text-sm opacity-70">
-            {address.country} - {address.state} - {address.city}
+            {address.state} - {address.city}
         </p>
         <div class="flex">
             <Sheet.Root>
@@ -53,20 +51,20 @@
                             campos.
                         </Sheet.Description>
                     </Sheet.Header>
-                    <AddressForm
-                        isUpdateForm
-                        class="flex flex-col gap-2"
-                        {data}
-                    />
+                    <AddressForm isUpdateForm {data} />
                 </Sheet.Content>
             </Sheet.Root>
             <form method="POST" action="/addresses?/del" use:enhance>
                 <Form.Field {form} name="id">
-                    <Form.Control >
-                        {#snippet children({ attrs })}
-                                                <Input class="hidden" {...attrs} value={$formData.id} />
-                                                                    {/snippet}
-                                        </Form.Control>
+                    <Form.Control>
+                        {#snippet children({ props })}
+                            <Input
+                                class="hidden"
+                                {...props}
+                                value={$formData.id}
+                            />
+                        {/snippet}
+                    </Form.Control>
                 </Form.Field>
                 <Form.Button class="font-bold" variant="link"
                     >Excluir</Form.Button
