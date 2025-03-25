@@ -4,7 +4,7 @@ import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad } from "./$types";
 import { findUserProfile } from "$lib/account/store";
 import { verifyUserPassword } from "$lib/auth/store";
-import { mapProfile } from "$lib/account/presenters";
+import { presentProfile } from "$lib/account/presenters";
 import { changePassword, updatePersonalInfo } from "$lib/account/schema";
 import { err, success, errInvalid, errGeneric } from "$lib/error";
 
@@ -22,12 +22,12 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     return {
         form: {
             update: await superValidate(
-                mapProfile(profile),
+                presentProfile(profile),
                 zod(updatePersonalInfo)
             ),
             changePassword: await superValidate(zod(changePassword))
         },
-        profile: mapProfile(profile)
+        profile: presentProfile(profile)
     };
 };
 
