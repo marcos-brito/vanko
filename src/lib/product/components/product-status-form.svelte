@@ -6,18 +6,18 @@
     import { superForm } from "sveltekit-superforms";
     import { Close } from "$lib/components/ui/sheet";
 
-    interface Props {
+    let {
+        id,
+        kind
+    }: {
         id: number;
         kind: string;
-        [key: string]: any
-    }
-
-    let { ...props }: Props = $props();
+    } = $props();
 
     const form = superForm(
         {
-            props.props.id,
-            props.props.kind,
+            id,
+            kind,
             reason: ""
         },
         {
@@ -28,39 +28,34 @@
     const { form: formData, enhance } = form;
 </script>
 
-<form
-    method="POST"
-    action="/dashboard/products?/changeStatus"
-    {...props}
-    use:enhance
->
+<form method="POST" action="/dashboard/products?/changeStatus" use:enhance>
     <Form.Field {form} name="id">
-        <Form.Control >
-            {#snippet children({ attrs })}
-                        <input {...attrs} hidden value={$formData.id} />
-                                {/snippet}
-                </Form.Control>
+        <Form.Control>
+            {#snippet children({ props })}
+                <input {...props} hidden value={$formData.id} />
+            {/snippet}
+        </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="kind">
-        <Form.Control >
-            {#snippet children({ attrs })}
-                        <input {...attrs} hidden value={$formData.kind} />
-                                {/snippet}
-                </Form.Control>
+        <Form.Control>
+            {#snippet children({ props })}
+                <input {...props} hidden value={$formData.kind} />
+            {/snippet}
+        </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Form.Field {form} name="reason">
-        <Form.Control >
-            {#snippet children({ attrs })}
-                        <Form.Label>Justificativa</Form.Label>
+        <Form.Control>
+            {#snippet children({ props })}
+                <Form.Label>Justificativa</Form.Label>
                 <Textarea
                     placeholder="Preencha com sua justificativa"
-                    {...attrs}
+                    {...props}
                     bind:value={$formData.reason}
                 />
-                                {/snippet}
-                </Form.Control>
+            {/snippet}
+        </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
     <Close class="w-full mt-4">

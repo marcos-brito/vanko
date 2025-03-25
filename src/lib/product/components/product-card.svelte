@@ -1,19 +1,17 @@
 <script lang="ts">
-    import { calculateProductPrice } from "$lib/utils";
+    import { toLocale } from "$lib/utils";
     import { ShoppingCart } from "lucide-svelte";
     import { Button } from "$lib/components/ui/button";
-    import { getContext } from "svelte";
-    import { type CartStore, type Product } from "$lib/shared/types";
     import { AspectRatio } from "$lib/components/ui/aspect-ratio";
+    import type { Product } from "../presenter";
 
-    interface Props {
+    let {
+        product,
+        images
+    }: {
         product: Product;
         images: Array<string>;
-    }
-
-    let { product, images }: Props = $props();
-
-    const cart: CartStore = getContext("cart");
+    } = $props();
 </script>
 
 <article class="flex flex-col gap-4 rounded w-52">
@@ -25,19 +23,12 @@
     <a href={`products/${product.id}`}>
         <h1 class="text-lg">{product.name}</h1>
     </a>
-    <p class="opacity-70 text-sm">{product.category}</p>
+    <p class="opacity-70 text-sm">{product.categories}</p>
     <div class="flex justify-between items-center">
         <p class="font-semibold">
-            {calculateProductPrice(
-                Number(product.cost),
-                product.profit_margin
-            ).toLocaleString("pt-br", { style: "currency", currency: "BRL" })}
+            {toLocale(product.price)}
         </p>
-        <Button
-            class="rounded-full"
-            on:click={() => cart.addOne(product.id.toString())}
-            size="icon"
-        >
+        <Button class="rounded-full" size="icon">
             <ShoppingCart size="16" />
         </Button>
     </div>

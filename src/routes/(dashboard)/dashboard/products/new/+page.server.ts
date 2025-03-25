@@ -2,7 +2,7 @@ import { error } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { invalidFormMessage, actionError, actionSuccess } from "$lib/error";
+import { err, success, errInvalid, errGeneric } from "$lib/error";
 import {
     newCategorySchema,
     newPricingGroupSchema,
@@ -18,7 +18,7 @@ import {
     insertProduct,
     insertType,
     uploadProductImages
-} from "$lib/product/model";
+} from "$lib/product/store";
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
     const { user } = await safeGetSession();
@@ -35,59 +35,40 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
 export const actions: Actions = {
     newProduct: async ({ request }) => {
         const form = await superValidate(request, zod(newProductSchema));
-        if (!form.valid) return actionError(form, invalidFormMessage);
+        if (!form.valid) return err(form, errInvalid);
 
         const created = await insertProduct(form.data);
-        if (!created)
-            return actionError(
-                form,
-                "Algo deu errado ao cadastrar o produto. Tente novamente mais tarde."
-            );
+        if (!created) return err(form, errGeneric);
 
         await uploadProductImages(created.id, form.data.images);
-        return actionSuccess(form, "Produto cadastrado.");
+        return success(form, "Produto cadastrado.");
     },
     newCategory: async (req) => {
         const form = await superValidate(req, zod(newCategorySchema));
-        if (!form.valid) return actionError(form, invalidFormMessage);
+        if (!form.valid) return err(form, errInvalid);
 
-        const created = await insertCategory(form.data.name);
-        if (!created)
-            return actionError(
-                form,
-                "Algo deu errado ao cadastrar a categoria. Tente novamente mais tarde."
-            );
+        const created = await insertCategory(form.data);
+        if (!created) return err(form, errGeneric);
 
-        return actionSuccess(form, "Categoria cadastrada");
+        return success(form, "Categoria cadastrada");
     },
     newType: async (req) => {
         const form = await superValidate(req, zod(newTypeSchema));
-        if (!form.valid) return actionError(form, invalidFormMessage);
+        if (!form.valid) return err(form, errInvalid);
 
-        const created = await insertType(form.data.name);
-        if (!created)
-            return actionError(
-                form,
-                "Algo deu errado ao cadastrar o tipo. Tente novamente mais tarde."
-            );
+        const created = await insertType(form.data);
+        if (!created) return err(form, errGeneric);
 
-        return actionSuccess(form, "Tipo cadastrado");
+        return success(form, "Tipo cadastrado");
     },
     newPricingGroup: async (req) => {
         const form = await superValidate(req, zod(newPricingGroupSchema));
-        if (!form.valid) return actionError(form, invalidFormMessage);
+        if (!form.valid) return err(form, errInvalid);
 
-        const created = await insertPricingGroup(
-            form.data.name,
-            form.data.profit_margin
-        );
+        const created = await insertPricingGroup(form.data);
 
-        if (!created)
-            return actionError(
-                form,
-                "Algo deu errado ao cadastrar o grupo de precificação. Tente novamente mais tarde."
-            );
+        if (!created) return err(form, errGeneric);
 
-        return actionSuccess(form, "Grupo de precificação cadastrado");
+        return success(form, "Grupo de precificação cadastrado");
     }
 };

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "./$types";
 import { json } from "@sveltejs/kit";
-import { findProduct, findProductImages } from "$lib/product/model";
+import { findProduct, findProductImages } from "$lib/product/store";
 
 export const GET: RequestHandler = async ({ params }) => {
     const id = Number(params.id);

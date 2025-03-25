@@ -24,6 +24,7 @@ export const statusChangeKind = pgEnum(
 );
 
 export type SelectProduct = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
 export const products = pgTable("products", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 150 }).notNull(),
@@ -57,6 +58,7 @@ export const statusChanges = pgTable("status_changes", {
 });
 
 export type SelectPricingGroup = typeof pricingGroups.$inferSelect;
+export type InsertPricingGroup = typeof pricingGroups.$inferInsert;
 export const pricingGroups = pgTable("pricing_groups", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
@@ -64,12 +66,14 @@ export const pricingGroups = pgTable("pricing_groups", {
 });
 
 export type SelectCategory = typeof categories.$inferSelect;
+export type InsertCategory = typeof categories.$inferInsert;
 export const categories = pgTable("categories", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()
 });
 
 export type SelectType = typeof types.$inferSelect;
+export type InsertType = typeof types.$inferInsert;
 export const types = pgTable("types", {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull()

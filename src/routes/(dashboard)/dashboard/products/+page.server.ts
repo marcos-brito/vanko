@@ -1,19 +1,20 @@
-import { actionError, genericError } from "$lib/error";
+import { err, success, errInvalid } from "$lib/error";
 import { zod } from "sveltekit-superforms/adapters";
 import type { PageServerLoad, Actions } from "./$types";
+import { presentProduct } from "$lib/product/presenter";
 import { superValidate } from "sveltekit-superforms";
 import { changeProductStatusSchema } from "$lib/product/schema";
 import {
     activateProduct,
-    countProducts,
     deactivateProduct,
     findAllProducts
-} from "$lib/product/model";
+} from "$lib/product/store";
 
 export const load: PageServerLoad = async () => {
     return {
-        products: await findAllProducts(),
-        productsCount: await countProducts()
+        products: await findAllProducts().then((products) =>
+            products.map(presentProduct)
+        )
     };
 };
 
@@ -24,12 +25,12 @@ export const actions: Actions = {
             zod(changeProductStatusSchema)
         );
 
-        if (!form.valid) return actionError(form, genericError);
+        if (!form.valid) return err(form, errInvalid);
         if (form.data.kind === "activate")
             await activateProduct(form.data.id, form.data.reason);
         if (form.data.kind === "deactivate")
             await deactivateProduct(form.data.id, form.data.reason);
 
-        return { form };
+        return success(form, "Status atualizado");
     }
 };
