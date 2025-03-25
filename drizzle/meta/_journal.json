@@ -57,6 +57,13 @@
       "when": 1742321418853,
       "tag": "0008_fix_cep_length",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1742911928062,
+      "tag": "0009_make_product_status_not_null",
+      "breakpoints": true
     }
   ]
 }

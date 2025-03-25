@@ -29,7 +29,7 @@ export const products = pgTable("products", {
     name: varchar("name", { length: 150 }).notNull(),
     description: text("description").notNull(),
     number: smallint("number").notNull(),
-    status: statusEnum("status").default(Status.Active),
+    status: statusEnum("status").default(Status.Active).notNull(),
     year: smallint("year").notNull(),
     bar_code: varchar("bar_code", { length: 13 }).notNull(),
     cost: numeric("cost", { precision: 5, scale: 2 }).notNull(),
